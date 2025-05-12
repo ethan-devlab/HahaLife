@@ -1,0 +1,123 @@
+{% extends 'member/base.html' %}
+
+{% block title %}
+Notifications - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="notification-container">
+  <h2 class="page-title">Notifications</h2>
+
+  {% if notifications %}
+  <ul class="notification-list">
+    {% for n in notifications %}
+    <li class="notification-item {% if not n.IsRead %}unread{% endif %}">
+      <div class="notification-content">
+        <span class="message">{{ n.Message|safe }}</span>
+        <span class="timestamp">{{ n.NotifyTime }}</span>
+      </div>
+      {% if not n.IsRead %}
+      <div class="actions">
+        <a href="/hahalife/notification/read/{{ n.NID }}/" class="mark-read-btn">
+          Mark as read
+        </a>
+      </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty-state">
+    <p>No notifications</p>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .notification-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .page-title {
+    color: var(--text-color);
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .notification-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .notification-item {
+    background: var(--light-lavender);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .notification-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(147, 112, 219, 0.2);
+  }
+
+  .notification-item.unread {
+    background: white;
+    border-left: 4px solid var(--secondary-color);
+  }
+
+  .notification-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .message {
+    color: var(--text-color);
+    line-height: 1.5;
+  }
+
+  .timestamp {
+    color: #666;
+    font-size: 0.9em;
+  }
+
+  .actions {
+    margin-left: 20px;
+  }
+
+  .mark-read-btn {
+    background: var(--secondary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+  }
+
+  .mark-read-btn:hover {
+    background: var(--text-color);
+    transform: translateY(-2px);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    background: var(--light-lavender);
+    border-radius: 8px;
+    color: var(--text-color);
+  }
+</style>
+{% endblock %}

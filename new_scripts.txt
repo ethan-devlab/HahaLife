@@ -1,0 +1,355 @@
+DROP DATABASE IF EXISTS shopping;
+CREATE DATABASE IF NOT EXISTS shopping;
+USE shopping;
+
+-- Create application user
+CREATE USER 'DBMS_A13'@'localhost' IDENTIFIED BY 'DBMS_A13';
+GRANT ALL PRIVILEGES ON shopping.* TO 'DBMS_A13'@'localhost';
+
+-- MEMBER table
+CREATE TABLE MEMBER (
+    UID CHAR(10)         NOT NULL PRIMARY KEY,
+    UName VARCHAR(15)    NOT NULL,
+    AccStatus VARCHAR(10)NOT NULL,
+    Password VARCHAR(100)NOT NULL,
+    Address VARCHAR(100),
+    PhoneNumber CHAR(10) UNIQUE,
+    Email VARCHAR(25)    UNIQUE NOT NULL,
+    MLevel INT(2)
+);
+
+-- SELLER table
+CREATE TABLE SELLER (
+    UID CHAR(10)         NOT NULL PRIMARY KEY,
+    UName VARCHAR(15)    NOT NULL,
+    AccStatus VARCHAR(10)NOT NULL,
+    Password VARCHAR(100)NOT NULL,
+    Address VARCHAR(100),
+    PhoneNumber CHAR(10) UNIQUE,
+    Email VARCHAR(25)    NOT NULL,
+    SName VARCHAR(10)    UNIQUE
+);
+
+-- ADMIN table
+CREATE TABLE ADMIN (
+    UID CHAR(10)         NOT NULL PRIMARY KEY,
+    UName VARCHAR(15)    NOT NULL,
+    AccStatus VARCHAR(10)NOT NULL,
+    Password VARCHAR(100)NOT NULL,
+    Address VARCHAR(100),
+    PhoneNumber CHAR(10),
+    Email VARCHAR(25)    NOT NULL,
+    L_Login DATETIME
+);
+
+-- GUEST table
+CREATE TABLE GUEST (
+    UID CHAR(10)         NOT NULL PRIMARY KEY,
+    UName VARCHAR(15),
+    AccStatus VARCHAR(10),
+    Password VARCHAR(100),
+    Address VARCHAR(100),
+    PhoneNumber CHAR(10),
+    Email VARCHAR(25)
+);
+
+-- APPLICANT table
+CREATE TABLE APPLICANT (
+    AppID CHAR(10)       NOT NULL PRIMARY KEY,
+    SID CHAR(10),
+    Status VARCHAR(15)   NOT NULL,
+    Name VARCHAR(15)     NOT NULL,
+    Email VARCHAR(25)    NOT NULL,
+    PhoneNumber CHAR(10) UNIQUE,
+    AppDate DATE         NOT NULL,
+    RevComment VARCHAR(100),
+    AID CHAR(10),
+    FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (AID) REFERENCES ADMIN(UID) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- PRODUCT table
+CREATE TABLE PRODUCT (
+    PID CHAR(10)         NOT NULL PRIMARY KEY,
+    Category VARCHAR(12) NOT NULL,
+    Price DECIMAL(6,2)   NOT NULL,
+    PName VARCHAR(30)    NOT NULL,
+    Descript VARCHAR(100)NOT NULL,
+    Stock INT(4)         NOT NULL,
+    SID CHAR(10),
+    FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- PRODUCT_TAG table
+CREATE TABLE PRODUCT_TAG (
+    Tag VARCHAR(10)      NOT NULL,
+    PID CHAR(10)         NOT NULL,
+    PRIMARY KEY (Tag, PID),
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- PROMOTION table
+CREATE TABLE PROMOTION (
+    PromoCode VARCHAR(6) NOT NULL PRIMARY KEY,
+    DisAmount INT(3)     NOT NULL
+);
+
+-- HAS_PROMO table
+CREATE TABLE HAS_PROMO (
+    PromoCode VARCHAR(6) NOT NULL,
+    PID CHAR(10)         NOT NULL,
+    PRIMARY KEY (PromoCode, PID),
+    FOREIGN KEY (PromoCode) REFERENCES PROMOTION(PromoCode) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ORDER table
+CREATE TABLE `ORDER` (
+    OID CHAR(10)         NOT NULL PRIMARY KEY,
+    OStatus VARCHAR(10)  NOT NULL,
+    SID CHAR(10),
+    Address VARCHAR(100) NOT NULL,
+    TotalAmount DECIMAL(7,2) NOT NULL,
+    MID CHAR(10),
+    CreatedAt DATETIME   NOT NULL,
+    FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (MID) REFERENCES MEMBER(UID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- USE_PROMO table
+CREATE TABLE USE_PROMO (
+    PromoCode VARCHAR(6) NOT NULL,
+    OID CHAR(10)         NOT NULL,
+    PRIMARY KEY (PromoCode, OID),
+    FOREIGN KEY (PromoCode) REFERENCES PROMOTION(PromoCode) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (OID) REFERENCES `ORDER`(OID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ORDER_DETAIL table
+CREATE TABLE ORDER_DETAIL (
+    OID CHAR(10)         NOT NULL,
+    PID CHAR(10)         NOT NULL,
+    Quantity INT(2)      NOT NULL,
+    UPrice DECIMAL(6,2)  NOT NULL,
+    Subtotal DECIMAL(7,2)NOT NULL,
+    PRIMARY KEY (OID, PID),
+    FOREIGN KEY (OID) REFERENCES `ORDER`(OID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- SOLDHISTORY table
+CREATE TABLE SOLDHISTORY (
+    SHID CHAR(10)        NOT NULL PRIMARY KEY,
+    OID CHAR(10)         NOT NULL,
+    SID CHAR(10)         NOT NULL,
+    PromoCode VARCHAR(6),
+    PayMethod VARCHAR(20)NOT NULL,
+    SDate DATE           NOT NULL,
+    TotalPrice DECIMAL(7,2) NOT NULL,
+    BID CHAR(10)         NOT NULL,
+    Quantity INT(3)      NOT NULL,
+    PID CHAR(10)         NOT NULL,
+    FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ORDERHISTORY table
+CREATE TABLE ORDERHISTORY (
+    OHID CHAR(10)        NOT NULL PRIMARY KEY,
+    OID CHAR(10)         NOT NULL,
+    MID CHAR(10),
+    OrderDate DATE       NOT NULL,
+    TotalAmount DECIMAL(7,2) NOT NULL,
+    OStatus VARCHAR(10)  NOT NULL,
+    PayMethod VARCHAR(20)NOT NULL,
+    FOREIGN KEY (MID) REFERENCES MEMBER(UID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- SHOPPINGCART table
+CREATE TABLE SHOPPINGCART (
+    CartID CHAR(10)      NOT NULL,
+    PID CHAR(10)         NOT NULL,
+    Quantity INT(3)      NOT NULL,
+    PRIMARY KEY (CartID, PID),
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID)
+);
+
+-- ADDED_TO table
+CREATE TABLE ADDED_TO (
+    CartID CHAR(10)      NOT NULL,
+    PID CHAR(10)         NOT NULL,
+    PRIMARY KEY (CartID, PID),
+    FOREIGN KEY (CartID, PID) REFERENCES SHOPPINGCART(CartID, PID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID)  ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- REVIEW table
+CREATE TABLE REVIEW (
+    RevID CHAR(10)       NOT NULL PRIMARY KEY,
+    PID CHAR(10)         NOT NULL,
+    Sell_R VARCHAR(100),
+    Buy_R VARCHAR(100),
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CREATE (shipment) table
+CREATE TABLE `CREATE` (
+    ShipID CHAR(10)      NOT NULL PRIMARY KEY,
+    OID CHAR(10)         NOT NULL,
+    UptTime DATETIME     NOT NULL,
+    ShipStatus VARCHAR(15)NOT NULL,
+    TrackNumber CHAR(17) UNIQUE NOT NULL,
+    Courier VARCHAR(30)  NOT NULL,
+    FOREIGN KEY (OID) REFERENCES `ORDER`(OID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- PAID_BY table
+CREATE TABLE PAID_BY (
+    PayID CHAR(10)       NOT NULL PRIMARY KEY,
+    OID CHAR(10)         NOT NULL,
+    PayMethod VARCHAR(20)NOT NULL,
+    PayStatus VARCHAR(15)NOT NULL,
+    FOREIGN KEY (OID) REFERENCES `ORDER`(OID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- NOTIFICATION table
+CREATE TABLE NOTIFICATION (
+    NID CHAR(10)         NOT NULL PRIMARY KEY,
+    MID CHAR(10)         NOT NULL,
+    OID CHAR(10),
+    Message TEXT         NOT NULL,
+    NotifyTime DATETIME  NOT NULL,
+    FOREIGN KEY (MID) REFERENCES MEMBER(UID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (OID) REFERENCES `ORDER`(OID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ======================
+-- Insert sample data
+-- ======================
+
+INSERT INTO MEMBER VALUES
+('M000000001','Alice Chen','Active','pass1234','No. 12, Sec. 1, Zhongxiao E. Rd., Zhongzheng Dist., Taipei City 100','0912345678','alice@example.com',5),
+('M000000002','Brian Hsu','Frozen','br!@456','No. 88, Lane 99, Minsheng Rd., Banqiao Dist., New Taipei City 220','0922333444','brian@example.com',3),
+('M000000003','Clara Huang','Inactive','clara789','No. 7, Sec. 2, Wenxin Rd., Xitun Dist., Taichung City 407','0988776655','clara@example.com',1),
+('M000000004','Daniel Ko','Active','danko123','No. 9, Wenhua Rd., Taoyuan Dist., Taoyuan City 330','0911222333','daniel@example.com',6),
+('M000000005','Emily Lin','Frozen','emilin789','No. 21, Zhongshan Rd., Hualien City 970','0921122334','emily@example.com',2),
+('M000000006','Irene Wang','Active','irene_pw','No. 168, Sec. 2, Zhonghua Rd., East Dist., Hsinchu City 300','0911122334','irene@example.com',6),
+('M000000007','Jacky Chen','Active','jacky_pw','No. 25, Chengde Rd., Datong Dist., Taipei City 103','0922567890','jacky@example.com',4);
+
+INSERT INTO SELLER VALUES
+('S000000001','Cathy Wu','Active','cat7890','No. 56, Sec. 3, Minquan E. Rd., Songshan Dist., Taipei City 105','0933111222','cathy@example.com','CathyShop'),
+('S000000002','David Lin','Inactive','dl!@678','No. 120, Zhonghua Rd., Gushan Dist., Kaohsiung City 804','0955667788','david@example.com','DavidMart'),
+('S000000003','Emma Chang','Active','emma888','No. 32, Yongkang St., East Dist., Tainan City 701','0911555777','emma@example.com','EmmaStore'),
+('S000000004','Felix Sun','Active','sunny456','No. 16, Guolian 5th Rd., Hualien City 970','0933344556','felix@example.com','FelixGoods'),
+('S000000005','Tony Chou','Active','tony_pw','No. 88, Zhongshan Rd., Banqiao Dist., New Taipei City 220','0938765432','tony@example.com','TonyTech');
+
+INSERT INTO ADMIN VALUES
+('A000000001','Evelyn Tsai','Active','admin888','No. 101, Guangfu Rd., East Dist., Hsinchu City 300','0966123456','evelyn@example.com','2025-04-10 10:30:00'),
+('A000000002','George Kuo','Active','gk888888','No. 200, Jinshan Rd., Zhonghe Dist., New Taipei City 235','0977333444','george@example.com','2025-04-11 08:00:00');
+
+INSERT INTO GUEST (UID) VALUES
+('G000000001'),('G000000002'),('G000000003');
+
+INSERT INTO APPLICANT VALUES
+('APP0000001',NULL,'Disapproved','Frank Yeh','frank@example.com','0977000111','2025-04-01','Incomplete documents.','A000000001'),
+('APP0000002',NULL,'Approved','Grace Liu','grace@example.com','0955777999','2025-04-05','Approved with conditions.','A000000002');
+
+INSERT INTO PROMOTION VALUES
+('PC1001',100),('PC1002',200),('PC1003',50),('PC2001',150),('PC2002',100);
+
+INSERT INTO PRODUCT VALUES
+('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',50,'S000000001'),
+('P000000002','Books',    499.00,'AI Revolution',   'A masterpiece of Kenny Wang',     20,'S000000001'),
+('P000000003','Beauty',   899.50,'Face Serum',      'Make your face like a new face',   30,'S000000003'),
+('P000000004','Kitchen', 1399.00,'Blender 9000',    'A powerful blender since 1950',   10,'S000000003'),
+('P000000005','Clothing', 799.00,'Denim Jacket',    'Trendy denim jacket with unisex design',25,'S000000004'),
+('P000000006','Toys',     299.00,'RC Car',          'Remote control off-road buggy',   40,'S000000004'),
+('P000000007','Food',      99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',100,'S000000001'),
+('P000000008','Beauty',  1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',40,'S000000004'),
+('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',20,'S000000005'),
+('P000000010','Books',     450.00,'The Art of SQL',  'A practical guide to database performance tuning',50,'S000000004');
+
+INSERT INTO HAS_PROMO VALUES
+('PC1001','P000000001'),('PC1002','P000000005'),('PC1003','P000000010'),('PC2001','P000000009'),('PC2002','P000000003');
+
+INSERT INTO PRODUCT_TAG VALUES
+('Gadgets','P000000001'),('Tech','P000000001'),
+('Education','P000000002'),('Skincare','P000000003'),
+('Home','P000000004'),('Fashion','P000000005'),
+('Fun','P000000006'),('Snack','P000000007'),
+('Skincare','P000000008'),('Gadgets','P000000009'),
+('Education','P000000010');
+
+INSERT INTO `ORDER` VALUES
+('O000000001','Shipped','S000000001','No. 3, Fuxing S. Rd., Da’an Dist., Taipei City 106',2498.99,'M000000001','2025-04-10 10:00:00'),
+('O000000002','Processing','S000000003','No. 77, Sec. 1, Wenhua Rd., East Dist., Tainan City 701',2298.50,'M000000002','2025-04-11 08:30:00'),
+('O000000003','Delivered','S000000004','No. 77, Sec. 2, Heping Rd., Dali Dist., Taichung City 412',1098.00,'M000000004','2025-04-12 16:00:00'),
+('O000000004','Cancelled','S000000001','No. 15, Lane 120, Chengde Rd., Datong Dist., Taipei City 103',  99.00,'M000000005','2025-04-13 11:00:00'),
+('O000000005','Delivered','S000000005','No. 3, Minsheng E. Rd., Xinyi Dist., Taipei City 110',5990.00,'M000000007','2025-04-15 13:00:00'),
+('O000000006','Processing','S000000004','No. 5, Guangfu S. Rd., Da’an Dist., Taipei City 106',1749.00,'M000000006','2025-04-16 08:00:00');
+
+INSERT INTO USE_PROMO VALUES
+('PC1001','O000000001'),('PC1002','O000000003'),('PC2001', 'O000000005');
+
+INSERT INTO ORDER_DETAIL VALUES
+('O000000001','P000000001',1,1999.99,1999.99),
+('O000000001','P000000002',1, 499.00, 499.00),
+('O000000002','P000000003',2, 899.50,1799.00),
+('O000000002','P000000004',1,1399.00,1399.00),
+('O000000003','P000000005',1, 799.00, 799.00),
+('O000000003','P000000006',1, 299.00, 299.00),
+('O000000004','P000000007',1,  99.00,  99.00),
+('O000000005','P000000009',1,5990.00,5990.00),
+('O000000006','P000000008',1,1299.00,1299.00),
+('O000000006','P000000010',1, 450.00, 450.00);
+
+INSERT INTO SOLDHISTORY VALUES
+('SH00000001','O000000001','S000000001','PC1001','Credit Card','2025-04-11',2498.99,'M000000001',2,'P000000001'),
+('SH00000002','O000000002','S000000003',     NULL,'Bank Transfer','2025-04-12',2298.50,'M000000002',3,'P000000003'),
+('SH00000003','O000000003','S000000004','PC1002','Line Pay',   '2025-04-13',1098.00,'M000000004',2,'P000000005'),
+('SH00000004','O000000005','S000000005','PC2001','Credit Card','2025-04-16',5990.00,'M000000007',1,'P000000009');
+
+INSERT INTO ORDERHISTORY VALUES
+('OH00000001','O000000001','M000000001','2025-04-10',2498.99,'Shipped','Credit Card'),
+('OH00000002','O000000002','M000000002','2025-04-11',2298.50,'Processing','Bank Transfer'),
+('OH00000003','O000000003','M000000004','2025-04-13',1098.00,'Delivered','Line Pay'),
+('OH00000004','O000000004','M000000005','2025-04-14',  99.00,'Cancelled','None'),
+('OH00000005','O000000005','M000000007','2025-04-16',5990.00,'Delivered','Credit Card');
+
+INSERT INTO SHOPPINGCART VALUES
+('CART00001','P000000001',1),
+('CART00002','P000000004',2),
+('CART00003','P000000007',3),
+('CART00004','P000000010',1);
+
+INSERT INTO ADDED_TO VALUES
+('CART00001','P000000001'),
+('CART00002','P000000004'),
+('CART00003','P000000007'),
+('CART00004','P000000010');
+
+INSERT INTO REVIEW VALUES
+('R000000001','P000000001','Great product!','Fast delivery.'),
+('R000000002','P000000003','Nice texture!',NULL),
+('R000000003','P000000005','Stylish and warm!','Delivered earlier than expected.'),
+('R000000004','P000000006','My kids love it!','Battery life is decent.'),
+('R000000005','P000000009','Responsive keys, great for gaming','Happy with the quick delivery'),
+('R000000006','P000000010','Clear explanations of complex topics','Highly recommend to SQL learners');
+
+INSERT INTO `CREATE` VALUES
+('SHIP000001','O000000001','2025-04-11 15:30:00','Delivered','T1234567890123456','Black Cat Delivery'),
+('SHIP000002','O000000002','2025-04-12 16:00:00','In Transit','T9876543210987654','HCT Logistics'),
+('SHIP000003','O000000003','2025-04-13 18:45:00','Delivered','T8888888888888888','FamilyMart Logistics'),
+('SHIP000004','O000000005','2025-04-16 14:45:00','Delivered','T2025041612345678','T-Cat');
+
+INSERT INTO PAID_BY VALUES
+('PAY000001','O000000001','Credit Card','Completed'),
+('PAY000002','O000000002','Bank Transfer','Pending'),
+('PAY000003','O000000003','Line Pay','Completed'),
+('PAY000004','O000000005','Credit Card','Completed');
+
+INSERT INTO NOTIFICATION VALUES
+('N000000001','M000000001','O000000001','Your order O000000001 has been shipped.','2025-04-11 15:45:00'),
+('N000000002','M000000002','O000000002','Your order O000000002 is now processing.','2025-04-12 09:00:00'),
+('N000000003','M000000004','O000000003','Good news! Your order O000000003 has been delivered.','2025-04-13 19:00:00'),
+('N000000004','M000000006','O000000006','Payment received for order O000000006. Thank you!','2025-04-16 10:00:00'),
+('N000000005','M000000007',NULL,'Don’t miss our weekend flash sale—up to 50% off selected items!','2025-04-18 08:00:00');

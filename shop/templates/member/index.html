@@ -1,0 +1,230 @@
+{% extends 'member/base.html' %}
+
+{% block title %}HahaLife Shopping{% endblock %}
+
+{% block content %}
+
+<div class="index-container">
+    <header class="welcome-header">
+        <h2>Welcome to HahaLife Shopping!</h2>
+        <p class="user-greeting">Hello, {{ request.session.uname }} ({{ role|capfirst }})</p>
+    </header>
+
+    <section class="product-filters">
+        <h2>Browse Products</h2>
+        <form method="get" class="filter-form">
+            <div class="search-row">
+                <input name="search" placeholder="Search name or ID" class="search-input">
+            </div>
+
+            <div class="filter-row">
+                <select name="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    {% for c in categories %}
+                    <option value="{{ c.Category }}">{{ c.Category }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="tag" class="filter-select">
+                    <option value="">All Tags</option>
+                    {% for t in tags %}
+                    <option value="{{ t.Tag }}">{{ t.Tag }}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="price-range">
+                    <input name="price_min" type="number" placeholder="Min Price" class="price-input">
+                    <span>-</span>
+                    <input name="price_max" type="number" placeholder="Max Price" class="price-input">
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <label class="discount-checkbox">
+                    <input type="checkbox" name="discount" value="1">
+                    <span>With Discount</span>
+                </label>
+
+                <select name="sort" class="filter-select">
+                    <option value="">Sort</option>
+                    <option value="price">Cheapest</option>
+                </select>
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                    <a href="/hahalife/" class="btn btn-secondary">Clear</a>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section class="product-list">
+        <ul class="products-grid">
+            {% for p in products %}
+            <li class="product-card">
+                <h3 class="product-name">{{ p.PName }}</h3>
+                <div class="product-details">
+                    <span class="product-category">{{ p.Category }}</span>
+                    <span class="product-price">NT${{ p.Price }}</span>
+                </div>
+                {% if p.Stock == 0 %}
+                <strong class="stock-status">Out of stock</strong>
+                {% endif %}
+                <a href="/hahalife/products/{{ p.PID }}/" class="view-details-btn">View Details</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+<style>
+    .index-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .welcome-header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--text-color);
+    }
+
+    .user-greeting {
+        color: var(--secondary-color);
+    }
+
+    .product-filters {
+        background: var(--primary-color);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    }
+
+    .filter-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-row {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        min-width: 150px;
+    }
+
+    .price-range {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .price-input {
+        width: 100px;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .discount-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .form-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    .btn-secondary {
+        background: var(--text-color);
+        color: white;
+        text-decoration: none;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        list-style: none;
+        padding: 0;
+    }
+
+    .product-card {
+        border: 1px solid var(--border-color);
+        background: var(--light-lavender);
+        border-radius: 8px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.2s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .product-name {
+        margin: 0;
+        font-size: 1.1em;
+    }
+
+    .product-details {
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+    }
+
+    .stock-status {
+        color: #dc3545;
+    }
+
+    .view-details-btn {
+        background: var(--secondary-color);
+        color: white;
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 4px;
+        text-align: center;
+        margin-top: auto;
+    }
+
+    .view-details-btn:hover {
+        background: var(--text-color);
+    }
+</style>
+{% endblock %}

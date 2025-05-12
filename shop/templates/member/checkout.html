@@ -1,0 +1,247 @@
+{% extends 'member/base.html' %}
+{% load static %}
+
+{% block title %}Checkout – HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+
+<style>
+  form {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 0 1em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h2 {
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5em;
+    margin: 1.5em 0 1em;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5em;
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    background: var(--light-lavender);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th,
+  td {
+    border: 1px solid var(--border-color);
+    padding: 0.75em;
+    text-align: left;
+  }
+
+  th {
+    background: var(--primary-color);
+    color: var(--text-color);
+    font-weight: 600;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5em;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+    transition: all 0.2s ease;
+  }
+
+  input[type="text"]:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+  }
+
+  .address-group {
+    display: flex;
+    gap: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  .address-group>div {
+    flex: 1;
+  }
+
+  .error {
+    color: #dc3545;
+    font-size: 0.85em;
+    margin-top: 0.25em;
+  }
+
+  button[type="submit"] {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.75em 2em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 2em 0;
+    width: 100%;
+  }
+
+  button[type="submit"]:hover {
+    background: var(--text-color);
+    transform: translateY(-2px);
+  }
+
+  #card-details,
+  #pickup-options {
+    background: var(--light-lavender);
+    padding: 1.5em;
+    border-radius: 4px;
+    margin-top: 1em;
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.1);
+  }
+
+  #card-details h3 {
+    margin-top: 0;
+    color: var(--text-color);
+  }
+
+  p strong {
+    color: var(--text-color);
+    font-size: 1.1em;
+  }
+</style>
+
+<form method="post" action="{% url 'place_order' %}" onsubmit="return validateForm()">
+  {% csrf_token %}
+
+  <h2>Delivery Address</h2>
+  <div class="address-group">
+    <div>
+      <label>Postal Code
+        <input type="text" id="postal_code" name="postal_code" required pattern="\d{3}" placeholder="e.g. 100"
+          value="407">
+      </label>
+    </div>
+    <div>
+      <label>City
+        <input type="text" id="city" name="city" required placeholder="e.g. 台北市" value="台中市">
+      </label>
+    </div>
+    <div>
+      <label>District
+        <input type="text" id="district" name="district" required placeholder="e.g. 中正區" value="西屯區">
+      </label>
+    </div>
+  </div>
+  <label>Street & House No.
+    <input type="text" id="street" name="street" required placeholder="e.g. 忠孝東路四段123號" value="文華路100號">
+  </label>
+
+  <h2>Order Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Seller</th>
+        <th>Product</th>
+        <th>Promo Code</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Discount</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in items %}
+      <tr>
+        <td>{{ i.SName }}</td>
+        <td>{{ i.PName }}</td>
+        <td>
+          <input type="text" id="promo-{{ i.PID }}" name="promo_{{ i.PID }}" placeholder="Enter promo code">
+          <div id="promo-error-{{ i.PID }}" class="error"></div>
+        </td>
+        <td>{{ i.Quantity }}</td>
+        <td>NT${{ i.Price }}</td>
+        <td id="discount-{{ i.PID }}">NT$0.00</td>
+        <td id="subtotal-{{ i.PID }}">NT${{ i.Subtotal }}</td>
+      </tr>
+      <input type="hidden" name="selected_pids" value="{{ i.PID }}">
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p>Total (before discount):
+    <strong>NT$<span id="total-raw">{{ total }}</span></strong>
+  </p>
+  <p>Discounted Total:
+    <strong>NT$<span id="total-disc">{{ total }}</span></strong>
+  </p>
+
+  <h2>Shipping Method</h2>
+  <label>
+    <select id="shipping" name="shipping" required>
+      <option value="">-- Select Shipping Method --</option>
+      <option value="standard">Standard Shipping (3–5 business days)</option>
+      <option value="express">Express Shipping (1–2 business days)</option>
+      <option value="store_pickup">Store Pickup</option>
+    </select>
+  </label>
+
+  <div id="pickup-options" style="display:none; margin-top:1em;">
+    <label>Pickup Location
+      <select id="pickup_location" name="pickup_location">
+        <option value="">-- Select Store --</option>
+        <option value="7-Eleven">7-Eleven</option>
+        <option value="Family Mart">Family Mart</option>
+        <option value="OK Mart">OK Mart</option>
+        <option value="Hi-Life">Hi-Life</option>
+      </select>
+    </label>
+  </div>
+
+  <h2>Payment Method</h2>
+  <label>
+    <select id="pay_method" name="pay_method" required>
+      <option value="">-- Select Payment Method --</option>
+      <option value="Visa">Credit Card (Visa)</option>
+      <option value="MasterCard">Credit Card (MasterCard)</option>
+      <option value="Cash On Delivery">Cash on Delivery</option>
+      <option value="Bank Transfer">Bank Transfer</option>
+    </select>
+  </label>
+
+  <div id="card-details" style="display:none; margin-top:1em;">
+    <h3>Card Information</h3>
+    <label>Card Holder
+      <input type="text" name="card_holder" pattern="[A-Za-z\s]{1, 15}" placeholder="John Doe">
+    </label>
+    <label>Card Number
+      <input type="text" name="card_number" pattern="\d{4}\s\d{4}\s\d{4}\s\d{4}" placeholder="1234 5678 1234 5678">
+    </label>
+    <label>Expiry (MM/YY)
+      <input type="text" name="card_expiry" pattern="(0[1-9]|1[0-2])\/\d{2}" placeholder="MM/YY">
+    </label>
+    <label>CVV
+      <input type="text" name="card_cvv" pattern="\d{3}" placeholder="123">
+    </label>
+  </div>
+
+  <button type="submit">Place Order</button>
+</form>
+
+{{ promo_map_json|safe|json_script:'promo_map_json' }}
+{{ items|json_script:'items' }}
+<script src="{% static 'member/js/checkout.js' %}"></script>
+
+
+{% endblock %}

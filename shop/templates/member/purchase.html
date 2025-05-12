@@ -1,0 +1,167 @@
+{% extends 'member/base.html' %}
+
+{% block title %}
+My Purchase History - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="purchase-history">
+    <h2>My Purchase History</h2>
+    {% if orders %}
+    <div class="order-list">
+        {% for o in orders %}
+        <div class="order-item">
+            <div class="order-header">
+                <span class="order-id">
+                    Order #<a href="{% url 'purchase_detail' o.OID %}">{{ o.OID }}</a>
+                </span>
+                <span class="order-date">{{ o.OrderDate }}</span>
+            </div>
+            <div class="order-details">
+                <div class="order-info">
+                    <span class="amount">NT${{ o.TotalAmount }}</span>
+                    <span class="status {{ o.OStatus|lower }}">{{ o.OStatus }}</span>
+                </div>
+                <div class="payment-info">
+                    <span class="payment-method">{{ o.PayMethod }}</span>
+                    <span class="payment-status {{ o.PayStatus|lower }}">{{ o.PayStatus }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No purchase history available.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .purchase-history {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .purchase-history h2 {
+        color: var(--text-color);
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    .order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .order-item {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+        background: var(--light-lavender);
+        transition: transform 0.2s ease;
+    }
+
+    .order-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(147, 112, 219, 0.3);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .order-id a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .order-id a:hover {
+        color: var(--text-color);
+    }
+
+    .order-date {
+        color: var(--text-color);
+        font-size: 0.9em;
+    }
+
+    .order-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-info,
+    .payment-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .amount {
+        font-weight: bold;
+        color: var(--secondary-color);
+    }
+
+    .status,
+    .payment-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .status.processing {
+        background: #FFF3E0;
+        color: #E65100;
+    }
+
+    .status.shipped {
+        background: var(--primary-color);
+        color: var(--secondary-color);
+    }
+
+    .status.cancelled {
+        background: #FFEBEE;
+        color: #C62828;
+    }
+
+    .status.completed {
+        background: var(--primary-color);
+        color: var(--secondary-color);
+    }
+
+    .payment-method {
+        color: var(--text-color);
+    }
+
+    .payment-status.paid {
+        color: var(--secondary-color);
+    }
+
+    .payment-status.pending {
+        color: #E65100;
+    }
+
+    .payment-status.failed {
+        color: #C62828;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-color);
+        background: var(--light-lavender);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+</style>
+{% endblock %}

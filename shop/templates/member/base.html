@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'member/css/base.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+<nav>
+      <div class="navbar">
+        <div class="container nav-container">
+            <input class="checkbox" type="checkbox" name="" id="" />
+            <div class="hamburger-lines">
+              <span class="line line1"></span>
+              <span class="line line2"></span>
+              <span class="line line3"></span>
+            </div>
+          <div class="logo">
+              <h1>HahaLife</h1>
+          </div>
+          <div class="menu-items">
+            <ul>
+            <li><a href="{% url 'product_list' %}">Home</a></li>
+            <li><a href="{% url 'view_cart' %}">Cart</a></li>
+            <li><a href="{% url 'mypurchase' %}">My Purchase</a></li>
+            <li><a href="{% url 'notification' %}">Notification</a></li>
+            <li><a href="{% url 'account' %}">My Account</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+<div id="content">
+  {% block content %}
+  {% endblock %}
+</div>
+
+<footer class="main-footer">
+    <div class="footer-content">
+        <p>&copy; 2025 HahaLife Shopping. All Rights Reserved</p>
+    </div>
+</footer>
+</body>
+</html>

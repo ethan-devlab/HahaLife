@@ -1,0 +1,67 @@
+{% extends 'member/base.html' %}
+
+{% block title %}
+Order Successfully Placed – HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="checkout-success">
+    <div class="success-container">
+        <div class="success-icon">✓</div>
+        <h2>Order Successfully Placed!</h2>
+        <a href="{% url 'mypurchase' %}" class="view-purchases-btn">View My Purchases</a>
+    </div>
+</div>
+
+<style>
+    .checkout-success {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 160px);
+        padding: 20px;
+    }
+
+    .success-container {
+        text-align: center;
+        background: var(--light-lavender);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .success-icon {
+        background: var(--secondary-color);
+        color: white;
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        border-radius: 50%;
+        font-size: 40px;
+        margin: 0 auto 20px;
+    }
+
+    h2 {
+        color: var(--text-color);
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    .view-purchases-btn {
+        display: inline-block;
+        background: var(--secondary-color);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .view-purchases-btn:hover {
+        background: var(--text-color);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

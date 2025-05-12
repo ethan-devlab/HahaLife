@@ -1,0 +1,258 @@
+{% extends 'member/base.html' %}
+
+{% block title %}Order Detail - HahaLife Shopping{% endblock %}
+
+{% block content %}
+<div class="order-detail">
+    <h2>Order Detail #{{ order.OID }}</h2>
+
+    <div class="order-summary">
+        <div class="order-info">
+            <div class="info-group">
+                <label>Order Date:</label>
+                <span>{{ order.OrderDate }}</span>
+            </div>
+            <div class="info-group">
+                <label>Status:</label>
+                <span class="status {{ order.OStatus|lower }}">{{ order.OStatus }}</span>
+            </div>
+            <div class="info-group">
+                <label>Payment:</label>
+                <span>{{ order.PayMethod }}
+                    <span class="payment-status {{ order.PayStatus|lower }}">({{ order.PayStatus }})</span>
+                </span>
+            </div>
+            <div class="info-group">
+                <label>Shipment:</label>
+                <span>{{ order.Courier }} - {{ order.TrackNumber }} <span
+                        class="ship-status {{ order.ShipStatus|lower }}">({{ order.ShipStatus }})</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="products-section">
+        <h3>Products</h3>
+        <div class="products-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                        <th>Review</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products %}
+                    <tr>
+                        <td>{{ p.PName }}</td>
+                        <td>{{ p.Quantity }}</td>
+                        <td>NT${{ p.UPrice }}</td>
+                        <td>NT${{ p.Subtotal }}</td>
+                        <td>
+                            <form method="post" action="{% url 'submit_review' order.OID p.PID %}">
+                                {% csrf_token %}
+                                <div class="review-form">
+                                    <label>Seller Review</label>
+                                    <textarea name="sell_r" placeholder="Seller review" class="review-input"
+                                        readonly>{% if p.Sell_R %}{{ p.Sell_R }}{% else %}No review yet.{% endif %}</textarea>
+                                    <label>Your Review</label>
+                                    <textarea name="buy_r" placeholder="Buyer review" class="review-input"
+                                        maxlength="100">{% if p.Buy_R %}{{ p.Buy_R }}{% else %}No review yet.{% endif %}</textarea>
+                                    <button type="submit" class="review-btn">Submit Review</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if order.OStatus != 'Shipped' and order.OStatus != 'Cancelled' %}
+    <div class="actions">
+        <a href="{% url 'cancel_order' order.OID %}" class="cancel-btn">Cancel Order</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .order-detail {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .order-detail h2 {
+        color: var(--text-color);
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    .order-summary {
+        background: var(--light-lavender);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    }
+
+    .order-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .info-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .info-group label {
+        color: var(--secondary-color);
+        font-size: 0.9em;
+    }
+
+    .products-section h3 {
+        color: var(--text-color);
+        margin-bottom: 15px;
+    }
+
+    .products-table {
+        background: var(--light-lavender);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+        background: var(--primary-color);
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+    .review-form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .review-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        resize: vertical;
+        min-height: 60px;
+        background: white;
+    }
+
+    .review-input:focus {
+        border-color: var(--secondary-color);
+        outline: none;
+    }
+
+    .review-btn {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .review-btn:hover {
+        background: var(--text-color);
+        transform: translateY(-2px);
+    }
+
+    .status,
+    .payment-status,
+    .ship-status {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .status.processing {
+        background: #FFF3E0;
+        color: #E65100;
+    }
+
+    .status.shipped {
+        background: var(--primary-color);
+        color: var(--secondary-color);
+    }
+
+    .status.cancelled {
+        background: #FFEBEE;
+        color: #C62828;
+    }
+
+    .status.completed {
+        background: var(--primary-color);
+        color: var(--secondary-color);
+    }
+
+    .payment-status.paid {
+        color: var(--secondary-color);
+    }
+
+    .payment-status.pending {
+        color: #E65100;
+    }
+
+    .payment-status.failed {
+        color: #C62828;
+    }
+
+    .ship-status.delivered {
+        color: var(--secondary-color);
+    }
+
+    .ship-status.transit {
+        color: #E65100;
+    }
+
+    .ship-status.pending {
+        color: #666;
+    }
+
+    .actions {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .cancel-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #dc3545;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .cancel-btn:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
