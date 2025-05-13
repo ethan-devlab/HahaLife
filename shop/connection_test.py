@@ -16,7 +16,7 @@ def get_connection():
 def execute_query(query, params=None, fetch=False):
     conn = get_connection()
     try:
-        with conn.cursor() as cursor:
+        with conn.cursor(dictionary=True) as cursor:
             cursor.execute(query, params)
             if fetch:
                 return cursor.fetchall()
@@ -38,9 +38,9 @@ query = execute_query("SELECT * FROM SELLER WHERE UID = %s", params=['S000000001
 print(query[0])
 
 # get new id
-next_uid = execute_query("SELECT LPAD(COUNT(*)+1, 9, '0') AS next_id FROM PRODUCT", fetch=True)[0][0]
-pid = f"P{next_uid}"
-print(pid)
+# next_uid = execute_query("SELECT LPAD(COUNT(*)+1, 9, '0') AS next_id FROM PRODUCT", fetch=True)[0][0]
+# pid = f"P{next_uid}"
+# print(pid)
 # insert new values
 # product_name = "Abc"
 # query = execute_query("INSERT INTO PRODUCT VALUES (%s, %s, %s, %s, %s, %s, %s)", params=(pid, category, ... and other values), fetch=False)
@@ -51,3 +51,30 @@ print(query[0])
 query = execute_query("SELECT * FROM MEMBER WHERE Email=%s AND Password=%s AND AccStatus='Active'",
                       params=("alice@example.com", "pass1234"), fetch=True)[0]
 print(dict(query))
+
+
+# 取得下一個 UID（例如 A000000123）
+next_uid_raw = execute_query(
+    "SELECT LPAD(COUNT(*) + 1, 9, '0') AS next_id FROM APPLICANT", fetch=True)
+print(next_uid_raw[0]['next_id'])
+uid = f"A{next_uid_raw[0]['next_id']}"
+print("New UID:", uid)
+
+# 模擬表單輸入
+full_name = "Charlie Wu"
+email = "charlie@example.com"
+phone = "0988777666"
+address = "123 Happy St."
+birth_date = "2000-01-15"
+
+# 新增進資料庫
+query = """
+    INSERT INTO APPLICANT (UID, FULL_NAME, EMAIL, PHONE, ADDRESS, BIRTH_DATE)
+    VALUES (%s, %s, %s, %s, %s, %s)
+"""
+params = (uid, full_name, email, phone, address, birth_date)
+execute_query(query, params=params)
+
+# 查詢剛剛新增的資料
+result = execute_query("SELECT * FROM APPLICANT WHERE UID = %s", params=[uid], fetch=True)
+print("Inserted record:", result[0])
