@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
     <link rel="stylesheet" href="{% static 'member/css/base.css' %}">
     <title>{% block title %}{% endblock %}</title>
 </head>
@@ -22,14 +23,12 @@
               <h1>HahaLife</h1>
           </div>
           <div class="menu-items">
-            <ul>
-            <li><a href="{% url 'product_list' %}">Home</a></li>
-            <li><a href="{% url 'view_cart' %}">Cart</a></li>
-            <li><a href="{% url 'mypurchase' %}">My Purchase</a></li>
-            <li><a href="{% url 'notification' %}">Notification</a></li>
-            <li><a href="{% url 'account' %}">My Account</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-            </ul>
+            <li><a href="{% url 'product_list' %}"><i class="ri-home-9-line ri-xl"></i></a></li>
+            <li><a href="{% url 'view_cart' %}"><i class="ri-shopping-cart-2-line ri-xl"></i></a></li>
+            <li><a href="{% url 'mypurchase' %}"><i class="ri-history-line ri-xl"></i></a></li>
+            <li><a href="{% url 'notification' %}"><i class="ri-notification-3-line ri-xl"></i></a></li>
+            <li><a href="{% url 'account' %}"><i class="ri-account-circle-line ri-xl"></i></a></li>
+            <li><a href="{% url 'logout' %}"><i class="ri-logout-box-line ri-xl"></i></a></li>
           </div>
         </div>
       </div>

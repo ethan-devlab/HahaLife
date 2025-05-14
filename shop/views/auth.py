@@ -42,6 +42,8 @@ def login_view(request):
 def register_view(request):
     if request.method == 'POST':
         uname = request.POST.get('uname')
+        gender = request.POST.get('gender')
+        birth = request.POST.get('birth')
         email = request.POST.get('email')
         phonenum = request.POST.get('phone')
         address = request.POST.get('address')
@@ -74,8 +76,8 @@ def register_view(request):
 
         try:
             execute_query(
-                "INSERT INTO MEMBER (UID, UName, AccStatus, Password, Email, Address) VALUES (%s, %s, %s, %s, %s, %s)",
-                (mid, uname, 'Active', password, email, address)
+                "INSERT INTO MEMBER (UID, UName, AccStatus, Password, Email, Address, Gender, BDate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                (mid, uname, 'Active', password, email, address, gender, birth)
             )
             messages.success(request, "Registration successful. Please log in.")
             return redirect('/hahalife/login/')

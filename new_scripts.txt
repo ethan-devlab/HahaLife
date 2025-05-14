@@ -15,7 +15,9 @@ CREATE TABLE MEMBER (
     Address VARCHAR(100),
     PhoneNumber CHAR(10) UNIQUE,
     Email VARCHAR(25)    UNIQUE NOT NULL,
-    MLevel INT(2)
+    BDate DATE,
+    Gender VARCHAR(10),
+    MLevel INT(2)	 DEFAULT 1
 );
 
 -- SELLER table
@@ -144,11 +146,10 @@ CREATE TABLE SOLDHISTORY (
     SID CHAR(10)         NOT NULL,
     PromoCode VARCHAR(6),
     PayMethod VARCHAR(20)NOT NULL,
-    SDate DATE           NOT NULL,
+    SDate DATETIME       NOT NULL,
     TotalPrice DECIMAL(7,2) NOT NULL,
     BID CHAR(10)         NOT NULL,
     Quantity INT(3)      NOT NULL,
-    PID CHAR(10)         NOT NULL,
     FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -157,7 +158,7 @@ CREATE TABLE ORDERHISTORY (
     OHID CHAR(10)        NOT NULL PRIMARY KEY,
     OID CHAR(10)         NOT NULL,
     MID CHAR(10),
-    OrderDate DATE       NOT NULL,
+    OrderDate DATETIME   NOT NULL,
     TotalAmount DECIMAL(7,2) NOT NULL,
     OStatus VARCHAR(10)  NOT NULL,
     PayMethod VARCHAR(20)NOT NULL,
@@ -218,6 +219,7 @@ CREATE TABLE NOTIFICATION (
     OID CHAR(10),
     Message TEXT         NOT NULL,
     NotifyTime DATETIME  NOT NULL,
+    IsRead BOOLEAN	 NOT NULL,
     FOREIGN KEY (MID) REFERENCES MEMBER(UID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (OID) REFERENCES `ORDER`(OID) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -227,13 +229,13 @@ CREATE TABLE NOTIFICATION (
 -- ======================
 
 INSERT INTO MEMBER VALUES
-('M000000001','Alice Chen','Active','pass1234','No. 12, Sec. 1, Zhongxiao E. Rd., Zhongzheng Dist., Taipei City 100','0912345678','alice@example.com',5),
-('M000000002','Brian Hsu','Frozen','br!@456','No. 88, Lane 99, Minsheng Rd., Banqiao Dist., New Taipei City 220','0922333444','brian@example.com',3),
-('M000000003','Clara Huang','Inactive','clara789','No. 7, Sec. 2, Wenxin Rd., Xitun Dist., Taichung City 407','0988776655','clara@example.com',1),
-('M000000004','Daniel Ko','Active','danko123','No. 9, Wenhua Rd., Taoyuan Dist., Taoyuan City 330','0911222333','daniel@example.com',6),
-('M000000005','Emily Lin','Frozen','emilin789','No. 21, Zhongshan Rd., Hualien City 970','0921122334','emily@example.com',2),
-('M000000006','Irene Wang','Active','irene_pw','No. 168, Sec. 2, Zhonghua Rd., East Dist., Hsinchu City 300','0911122334','irene@example.com',6),
-('M000000007','Jacky Chen','Active','jacky_pw','No. 25, Chengde Rd., Datong Dist., Taipei City 103','0922567890','jacky@example.com',4);
+('M000000001','Alice Chen','Active','pass1234','No. 12, Sec. 1, Zhongxiao E. Rd., Zhongzheng Dist., Taipei City 100','0912345678','alice@example.com','2000-01-10','Female',5),
+('M000000002','Brian Hsu','Frozen','br!@456','No. 88, Lane 99, Minsheng Rd., Banqiao Dist., New Taipei City 220','0922333444','brian@example.com','2000-02-11','Male',3),
+('M000000003','Clara Huang','Inactive','clara789','No. 7, Sec. 2, Wenxin Rd., Xitun Dist., Taichung City 407','0988776655','clara@example.com','1998-03-03','Female',1),
+('M000000004','Daniel Ko','Active','danko123','No. 9, Wenhua Rd., Taoyuan Dist., Taoyuan City 330','0911222333','daniel@example.com','2003-05-10','Male',6),
+('M000000005','Emily Lin','Frozen','emilin789','No. 21, Zhongshan Rd., Hualien City 970','0921122334','emily@example.com','1995-07-03','Female',2),
+('M000000006','Irene Wang','Active','irene_pw','No. 168, Sec. 2, Zhonghua Rd., East Dist., Hsinchu City 300','0911122334','irene@example.com','2002-10-10','Female',6),
+('M000000007','Jacky Chen','Active','jacky_pw','No. 25, Chengde Rd., Datong Dist., Taipei City 103','0922567890','jacky@example.com','1999-12-25','Male',4);
 
 INSERT INTO SELLER VALUES
 ('S000000001','Cathy Wu','Active','cat7890','No. 56, Sec. 3, Minquan E. Rd., Songshan Dist., Taipei City 105','0933111222','cathy@example.com','CathyShop'),
@@ -303,17 +305,20 @@ INSERT INTO ORDER_DETAIL VALUES
 ('O000000006','P000000010',1, 450.00, 450.00);
 
 INSERT INTO SOLDHISTORY VALUES
-('SH00000001','O000000001','S000000001','PC1001','Credit Card','2025-04-11',2498.99,'M000000001',2,'P000000001'),
-('SH00000002','O000000002','S000000003',     NULL,'Bank Transfer','2025-04-12',2298.50,'M000000002',3,'P000000003'),
-('SH00000003','O000000003','S000000004','PC1002','Line Pay',   '2025-04-13',1098.00,'M000000004',2,'P000000005'),
-('SH00000004','O000000005','S000000005','PC2001','Credit Card','2025-04-16',5990.00,'M000000007',1,'P000000009');
+('SH00000001','O000000001','S000000001','PC1001','Credit Card','2025-04-10 10:00:00',2498.99,'M000000001',2),
+('SH00000002','O000000002','S000000003',     NULL,'Bank Transfer','2025-04-11 08:30:00',2298.50,'M000000002',3),
+('SH00000003','O000000003','S000000004','PC1002','Cash On Delivery',   '2025-04-12 16:00:00',1098.00,'M000000004',2),
+('SH00000004','O000000004','S000000001',     NULL,'Bank Transfer','2025-04-13 11:00:00',99.00,'M000000005',1),
+('SH00000005','O000000005','S000000005','PC2001','Credit Card','2025-04-15 13:00:00',5990.00,'M000000007',1),
+('SH00000006','O000000006','S000000004',NULL,'Credit Card','2025-04-16 08:00:00',1749.00,'M000000006',2);
 
 INSERT INTO ORDERHISTORY VALUES
-('OH00000001','O000000001','M000000001','2025-04-10',2498.99,'Shipped','Credit Card'),
-('OH00000002','O000000002','M000000002','2025-04-11',2298.50,'Processing','Bank Transfer'),
-('OH00000003','O000000003','M000000004','2025-04-13',1098.00,'Delivered','Line Pay'),
-('OH00000004','O000000004','M000000005','2025-04-14',  99.00,'Cancelled','None'),
-('OH00000005','O000000005','M000000007','2025-04-16',5990.00,'Delivered','Credit Card');
+('OH00000001','O000000001','M000000001','2025-04-10 10:00:00',2498.99,'Shipped','Credit Card'),
+('OH00000002','O000000002','M000000002','2025-04-11 08:30:00',2298.50,'Processing','Bank Transfer'),
+('OH00000003','O000000003','M000000004','2025-04-12 16:00:00',1098.00,'Delivered','Cash On Delivery'),
+('OH00000004','O000000004','M000000005','2025-04-13 11:00:00',  99.00,'Cancelled','Bank Transfer'),
+('OH00000005','O000000005','M000000007','2025-04-15 13:00:00',5990.00,'Delivered','Credit Card'),
+('OH00000006','O000000006','M000000006','2025-04-16 08:00:00',1749.00,'Processing','Credit Card');
 
 INSERT INTO SHOPPINGCART VALUES
 ('CART00001','P000000001',1),
@@ -348,8 +353,8 @@ INSERT INTO PAID_BY VALUES
 ('PAY000004','O000000005','Credit Card','Completed');
 
 INSERT INTO NOTIFICATION VALUES
-('N000000001','M000000001','O000000001','Your order O000000001 has been shipped.','2025-04-11 15:45:00'),
-('N000000002','M000000002','O000000002','Your order O000000002 is now processing.','2025-04-12 09:00:00'),
-('N000000003','M000000004','O000000003','Good news! Your order O000000003 has been delivered.','2025-04-13 19:00:00'),
-('N000000004','M000000006','O000000006','Payment received for order O000000006. Thank you!','2025-04-16 10:00:00'),
-('N000000005','M000000007',NULL,'Don’t miss our weekend flash sale—up to 50% off selected items!','2025-04-18 08:00:00');
+('N000000001','M000000001','O000000001','Your order O000000001 has been shipped.','2025-04-11 15:45:00',TRUE),
+('N000000002','M000000002','O000000002','Your order O000000002 is now processing.','2025-04-12 09:00:00',FALSE),
+('N000000003','M000000004','O000000003','Good news! Your order O000000003 has been delivered.','2025-04-13 19:00:00',TRUE),
+('N000000004','M000000006','O000000006','Payment received for order O000000006. Thank you!','2025-04-16 10:00:00',TRUE),
+('N000000005','M000000007',NULL,'Don’t miss our weekend flash sale—up to 50% off selected items!','2025-04-18 08:00:00',FALSE);
