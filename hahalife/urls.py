@@ -24,5 +24,5 @@ handler404 = 'shop.views.404.custom_404_view'
 urlpatterns = [
     path('', include('shop.urls')),
     path('hahalife/', include('shop.urls')),
-    path('admin/', admin.site.urls),
+    # path('admin/', include('shop.urls')),
 ]

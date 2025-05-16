@@ -1,48 +1,50 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
-    <link rel="stylesheet" href="{% static 'member/css/base.css' %}">
-    <title>{% block title %}{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="{% static 'member/css/base.css' %}">
+    {% block extrahead %}{% endblock %}
+  <title>{% block title %}{% endblock %}</title>
 </head>
+
 <body>
 
-<nav>
-      <div class="navbar">
-        <div class="container nav-container">
-            <input class="checkbox" type="checkbox" name="" id="" />
-            <div class="hamburger-lines">
-              <span class="line line1"></span>
-              <span class="line line2"></span>
-              <span class="line line3"></span>
-            </div>
-          <div class="logo">
-              <h1>HahaLife</h1>
-          </div>
-          <div class="menu-items">
-            <li><a href="{% url 'product_list' %}"><i class="ri-home-9-line ri-xl"></i></a></li>
-            <li><a href="{% url 'view_cart' %}"><i class="ri-shopping-cart-2-line ri-xl"></i></a></li>
-            <li><a href="{% url 'mypurchase' %}"><i class="ri-history-line ri-xl"></i></a></li>
-            <li><a href="{% url 'notification' %}"><i class="ri-notification-3-line ri-xl"></i></a></li>
-            <li><a href="{% url 'account' %}"><i class="ri-account-circle-line ri-xl"></i></a></li>
-            <li><a href="{% url 'logout' %}"><i class="ri-logout-box-line ri-xl"></i></a></li>
-          </div>
+  <nav>
+    <div class="navbar">
+      <div class="container nav-container">
+        <div class="logo">
+          <h1>
+            <a href="{% url 'product_list' %}">
+              HahaLife
+            </a>
+          </h1>
+        </div>
+        <div class="menu-items">
+          <li><a href="{% url 'product_list' %}"><i class="ri-home-9-line ri-xl"></i>Browse</a></li>
+          <li><a href="{% url 'view_cart' %}"><i class="ri-shopping-cart-2-line ri-xl"></i>Cart</a></li>
+          <li><a href="{% url 'mypurchase' %}"><i class="ri-history-line ri-xl"></i>Orders</a></li>
+          <li><a href="{% url 'notification' %}"><i class="ri-notification-3-line ri-xl"></i>Notifications</a></li>
+          <li><a href="{% url 'account' %}"><i class="ri-user-settings-line ri-xl"></i>Account</a></li>
+          <li><a href="{% url 'logout' %}"><i class="ri-logout-box-line ri-xl"></i>Logout</a></li>
         </div>
       </div>
-    </nav>
-
-<div id="content">
-  {% block content %}
-  {% endblock %}
-</div>
-
-<footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2025 HahaLife Shopping. All Rights Reserved</p>
     </div>
-</footer>
+  </nav>
+
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 HahaLife Shopping. All Rights Reserved</p>
+    </div>
+  </footer>
 </body>
+
 </html>

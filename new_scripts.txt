@@ -61,10 +61,11 @@ CREATE TABLE APPLICANT (
     SID CHAR(10),
     Status VARCHAR(15)   NOT NULL,
     Name VARCHAR(15)     NOT NULL,
-    Email VARCHAR(25)    NOT NULL,
+    Email VARCHAR(25)    UNIQUE,
     PhoneNumber CHAR(10) UNIQUE,
     AppDate DATE         NOT NULL,
     RevComment VARCHAR(100),
+    Password VARCHAR(100) NOT NULL,
     AID CHAR(10),
     FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (AID) REFERENCES ADMIN(UID) ON DELETE SET NULL ON UPDATE CASCADE
@@ -93,7 +94,9 @@ CREATE TABLE PRODUCT_TAG (
 -- PROMOTION table
 CREATE TABLE PROMOTION (
     PromoCode VARCHAR(6) NOT NULL PRIMARY KEY,
-    DisAmount INT(3)     NOT NULL
+    DisAmount INT(3)     NOT NULL,
+    SID CHAR(10),
+    FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- HAS_PROMO table
@@ -252,11 +255,11 @@ INSERT INTO GUEST (UID) VALUES
 ('G000000001'),('G000000002'),('G000000003');
 
 INSERT INTO APPLICANT VALUES
-('APP0000001',NULL,'Disapproved','Frank Yeh','frank@example.com','0977000111','2025-04-01','Incomplete documents.','A000000001'),
-('APP0000002',NULL,'Approved','Grace Liu','grace@example.com','0955777999','2025-04-05','Approved with conditions.','A000000002');
+('APP0000001',NULL,'Disapproved','Frank Yeh','frank@example.com','0977000111','2025-04-01','Incomplete documents.','A000000001','frank888'),
+('APP0000002',NULL,'Approved','Grace Liu','grace@example.com','0955777999','2025-04-05','Approved with conditions.','A000000002','grace123');
 
 INSERT INTO PROMOTION VALUES
-('PC1001',100),('PC1002',200),('PC1003',50),('PC2001',150),('PC2002',100);
+('PC1001',100,NULL),('PC1002',200,NULL),('PC1003',50,NULL),('PC2001',150,NULL),('PC2002',100,NULL);
 
 INSERT INTO PRODUCT VALUES
 ('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',50,'S000000001'),

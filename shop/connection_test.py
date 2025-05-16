@@ -54,27 +54,40 @@ print(dict(query))
 
 
 # 取得下一個 UID（例如 A000000123）
-next_uid_raw = execute_query(
-    "SELECT LPAD(COUNT(*) + 1, 9, '0') AS next_id FROM APPLICANT", fetch=True)
-print(next_uid_raw[0]['next_id'])
-uid = f"A{next_uid_raw[0]['next_id']}"
-print("New UID:", uid)
+# next_uid_raw = execute_query(
+#     "SELECT LPAD(COUNT(*) + 1, 9, '0') AS next_id FROM APPLICANT", fetch=True)
+# print(next_uid_raw[0]['next_id'])
+# uid = f"A{next_uid_raw[0]['next_id']}"
+# print("New UID:", uid)
+#
+# # 模擬表單輸入
+# full_name = "Charlie Wu"
+# email = "charlie@example.com"
+# phone = "0988777666"
+# address = "123 Happy St."
+# birth_date = "2000-01-15"
+#
+# # 新增進資料庫
+# query = """
+#     INSERT INTO APPLICANT (UID, FULL_NAME, EMAIL, PHONE, ADDRESS, BIRTH_DATE)
+#     VALUES (%s, %s, %s, %s, %s, %s)
+# """
+# params = (uid, full_name, email, phone, address, birth_date)
+# execute_query(query, params=params)
+#
+# # 查詢剛剛新增的資料
+# result = execute_query("SELECT * FROM APPLICANT WHERE UID = %s", params=[uid], fetch=True)
+# print("Inserted record:", result[0])
 
-# 模擬表單輸入
-full_name = "Charlie Wu"
-email = "charlie@example.com"
-phone = "0988777666"
-address = "123 Happy St."
-birth_date = "2000-01-15"
+oid = 'O000000004'
 
-# 新增進資料庫
-query = """
-    INSERT INTO APPLICANT (UID, FULL_NAME, EMAIL, PHONE, ADDRESS, BIRTH_DATE)
-    VALUES (%s, %s, %s, %s, %s, %s)
-"""
-params = (uid, full_name, email, phone, address, birth_date)
-execute_query(query, params=params)
+sale = execute_query(
+    "SELECT * FROM SOLDHISTORY WHERE OID = %s", (oid,), fetch=True
+)[0]
 
-# 查詢剛剛新增的資料
-result = execute_query("SELECT * FROM APPLICANT WHERE UID = %s", params=[uid], fetch=True)
-print("Inserted record:", result[0])
+ship = execute_query("SELECT * FROM `CREATE` WHERE OID = %s", (oid,), fetch=True)[0]
+
+products = execute_query(
+    "SELECT OD.PID, P.PName, OD.Quantity, OD.UPrice, OD.Subtotal FROM ORDER_DETAIL OD JOIN PRODUCT P ON OD.PID=P.PID WHERE OD.OID=%s",
+    (oid,), fetch=True
+)

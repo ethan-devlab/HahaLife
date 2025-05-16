@@ -51,7 +51,7 @@
                         <td>NT${{ p.UPrice }}</td>
                         <td>NT${{ p.Subtotal }}</td>
                         <td>
-                            <form method="post" action="{% url 'submit_review' order.OID p.PID %}">
+                            <form method="post" action="{% url 'submit_member_review' order.OID p.PID %}">
                                 {% csrf_token %}
                                 <div class="review-form">
                                     <label>Seller Review</label>

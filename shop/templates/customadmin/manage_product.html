@@ -1,0 +1,166 @@
+{% extends 'customadmin/base.html' %}
+
+{% block title %}
+Manage Products - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="manage-products">
+  <h2>Manage Products</h2>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
+  <section class="search-section">
+    <h3>Search Product</h3>
+    <form method="post" class="search-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Enter Product ID:</label>
+        <input type="text" name="pid" value="{{ request.POST.pid }}" required>
+      </div>
+      <button type="submit" name="action" value="search">Search</button>
+    </form>
+  </section>
+
+  {% if product %}
+  <section class="product-details">
+    <h3>Selected Product Details</h3>
+    <div class="details-card">
+      <div class="detail-group">
+        <label>PID:</label>
+        <span>{{ product.PID }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Name:</label>
+        <span>{{ product.PName }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Category:</label>
+        <span>{{ product.Category }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Price:</label>
+        <span>NT${{ product.Price }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Stock:</label>
+        <span>{{ product.Stock }}</span>
+      </div>
+      <div class="detail-group">
+        <label>Description:</label>
+        <p>{{ product.Descript }}</p>
+      </div>
+      <form method="post" class="remove-form">
+        {% csrf_token %}
+        <input type="hidden" name="pid" value="{{ product.PID }}">
+        <button type="submit" name="action" value="remove" class="remove-btn">Remove Product</button>
+      </form>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="all-products">
+    <h3>All Products</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>PID</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td><a href="?pid={{ p.PID }}">{{ p.PID }}</a></td>
+          <td>{{ p.PName }}</td>
+          <td>{{ p.Category }}</td>
+          <td>NT${{ p.Price }}</td>
+          <td>{{ p.Stock }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<style>
+  /*
+  .manage-products {
+    display: grid;
+    gap: 2rem;
+  }
+  */
+
+  .details-card {
+    background: var(--light-lavender);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+  }
+
+  .detail-group {
+    margin-bottom: 1rem;
+  }
+
+  .detail-group label {
+    font-weight: 600;
+    color: var(--text-color);
+    display: inline-block;
+    width: 100px;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  .remove-btn {
+    background: #dc3545;
+    margin-top: 1rem;
+  }
+
+  .remove-btn:hover {
+    background: #c82333;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+    transition: all 0.2s ease;
+  }
+
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+  }
+
+  table a {
+    color: var(--secondary-color);
+    text-decoration: none;
+  }
+
+  table a:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}

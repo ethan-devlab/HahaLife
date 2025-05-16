@@ -1,0 +1,53 @@
+{% extends 'customadmin/base.html' %}
+
+{% block title %}
+Admin Dashboard - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2>Admin Dashboard</h2>
+    <div class="welcome-card">
+        <div class="welcome-header">
+            <i class="ri-admin-line ri-3x"></i>
+            <h3>Welcome back, {{ request.session.uname }}!</h3>
+        </div>
+        <p>Select an option from the navigation menu to manage the platform.</p>
+    </div>
+</div>
+
+<style>
+    .dashboard {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .welcome-card {
+        background: var(--light-lavender);
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    }
+
+    .welcome-header {
+        margin-bottom: 1rem;
+    }
+
+    .welcome-header i {
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .welcome-header h3 {
+        color: var(--text-color);
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .welcome-card p {
+        color: var(--text-color);
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}

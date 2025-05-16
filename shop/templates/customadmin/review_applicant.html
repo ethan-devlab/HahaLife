@@ -1,0 +1,94 @@
+{% extends 'customadmin/base.html' %}
+
+{% block title %}
+Review Applicants - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<h2>Pending Seller Applications</h2>
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+          {% endfor %}
+  </ul>
+  {% endif %}
+{% if applicants %}
+<table>
+  <thead>
+    <tr>
+      <th>AppID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Status</th>
+      <th>Application Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in applicants %}
+    <tr>
+      <td>{{ a.AppID }}</td>
+      <td>{{ a.Name }}</td>
+      <td>{{ a.Email }}</td>
+      <td>{{ a.PhoneNumber }}</td>
+      <td>{{ a.Status }}</td>
+      <td>{{ a.AppDate }}</td>
+      <td>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="appid" value="{{ a.AppID }}">
+          <div class="button-group">
+            <button type="submit" name="action" value="approve" class="approve-btn">Approve</button>
+            <button type="submit" name="action" value="reject" class="reject-btn">Reject</button>
+          </div>
+          <div class="form-group">
+            <label>Comment:</label>
+            <textarea name="comment" rows="3">{% if a.RevComment %}{{a.RevComment}}{% endif %}</textarea>
+          </div>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+  <p>No pending applications.</p>
+</div>
+{% endif %}
+
+<style>
+  .button-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .approve-btn {
+    background: #28a745;
+  }
+
+  .reject-btn {
+    background: #dc3545;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem;
+    background: var(--light-lavender);
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+
+  .form-group {
+    margin-top: 0.5rem;
+  }
+
+  textarea {
+    min-height: 60px;
+    resize: vertical;
+  }
+</style>
+{% endblock %}

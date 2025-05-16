@@ -6,8 +6,8 @@
 
 <div class="index-container">
     <header class="welcome-header">
-        <h2>Welcome to HahaLife Shopping!</h2>
-        <p class="user-greeting">Hello, {{ request.session.uname }} ({{ role|capfirst }})</p>
+        <h2 style="text-align: center; margin-bottom: 0.5rem;">Welcome to HahaLife Shopping!</h2>
+        <p class="user-greeting">Hello, {{ request.session.uname }}</p>
     </header>
 
     <section class="product-filters">
@@ -47,7 +47,8 @@
 
                 <select name="sort" class="filter-select">
                     <option value="">Sort</option>
-                    <option value="price">Cheapest</option>
+                    <option value="low">Cheapest</option>
+                    <option value="high">Most Expensive</option>
                 </select>
 
                 <div class="form-buttons">
@@ -62,7 +63,10 @@
         <ul class="products-grid">
             {% for p in products %}
             <li class="product-card">
-                <h3 class="product-name">{{ p.PName }}</h3>
+                <div class="brief-product">
+                    <h3 class="product-name">{{ p.PName }}</h3>
+                    <span class="sold-count">Sold: {{ p.SoldCount }}</span>
+                </div>
                 <div class="product-details">
                     <span class="product-category">{{ p.Category }}</span>
                     <span class="product-price">NT${{ p.Price }}</span>
@@ -92,6 +96,7 @@
 
     .user-greeting {
         color: var(--secondary-color);
+        font-size: 1.2em;
     }
 
     .product-filters {
@@ -158,6 +163,7 @@
     }
 
     .btn {
+        font-size: 1em;
         padding: 8px 16px;
         border-radius: 4px;
         border: none;
@@ -206,6 +212,16 @@
     .product-details {
         display: flex;
         justify-content: space-between;
+        color: #666;
+    }
+
+    .brief-product {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .brief-product .sold-count {
+        font-size: 0.9em;
         color: #666;
     }
 

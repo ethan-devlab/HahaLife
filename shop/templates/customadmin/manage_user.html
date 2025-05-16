@@ -1,0 +1,189 @@
+{% extends 'customadmin/base.html' %}
+
+{% block title %}
+Manage Users - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="manage-users">
+  <h2>Manage Users</h2>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
+  <div class="user-tables">
+    <section class="search-section">
+      <h3>Search User</h3>
+      <form method="post" class="search-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>Enter User ID:</label>
+          <input type="text" name="uid" value="{{ request.POST.uid }}" required>
+        </div>
+        <button type="submit">Search</button>
+      </form>
+    </section>
+
+    {% if user %}
+    <section class="edit-section">
+      <h3>Edit {{ user.role }}</h3>
+      <form method="post" class="edit-form">
+        {% csrf_token %}
+        <input type="hidden" name="uid" value="{{ user.UID }}">
+        <div class="form-group">
+          <label>{{ user.role|capfirst }} ID:</label>
+          <span class="field-value">{{ user.UID }}</span>
+        </div>
+        <div class="form-group">
+          <label>Name:</label>
+          <span class="field-value">{{ user.UName }}</span>
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <span class="field-value">{{ user.Email }}</span>
+        </div>
+        <div class="form-group">
+          <label>Status:</label>
+          <select name="status">
+            <option value="Active" {% if user.AccStatus == 'Active' %}selected{% endif %}>Active</option>
+            <option value="Inactive" {% if user.AccStatus == 'Inactive' %}selected{% endif %}>Inactive</option>
+            <option value="Frozen" {% if user.AccStatus == 'Frozen' %}selected{% endif %}>Frozen</option>
+          </select>
+        </div>
+        <button type="submit">Update Status</button>
+      </form>
+    </section>
+    {% endif %}
+
+    <section class="user-section">
+      <h3>Members</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Member ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in members %}
+          <tr>
+            <td><a href="?uid={{ u.UID }}">{{ u.UID }}</a></td>
+            <td>{{ u.UName }}</td>
+            <td>{{ u.Email }}</td>
+            <td><span class="status-badge {{ u.AccStatus|lower }}">{{ u.AccStatus }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+
+    <section class="user-section">
+      <h3>Sellers</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Seller ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in sellers %}
+          <tr>
+            <td><a href="?uid={{ u.UID }}">{{ u.UID }}</a></td>
+            <td>{{ u.UName }}</td>
+            <td>{{ u.Email }}</td>
+            <td><span class="status-badge {{ u.AccStatus|lower }}">{{ u.AccStatus }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+
+<style>
+  /*
+  .user-tables {
+    display: grid;
+    gap: 2rem;
+  }
+  */
+
+  .user-section table {
+    margin-bottom: 2rem;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .status-badge.active {
+    background: #dff0d8;
+    color: #3c763d;
+  }
+
+  .status-badge.inactive {
+    background: #f2dede;
+    color: #a94442;
+  }
+
+  .status-badge.frozen {
+    background: #d9edf7;
+    color: #31708f;
+  }
+
+  .field-value {
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1em;
+    transition: all 0.2s ease;
+  }
+
+  input[type="text"]:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+  }
+
+  table a {
+    color: var(--secondary-color);
+    text-decoration: none;
+  }
+
+  table a:hover {
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="{% static 'customadmin/css/base.css' %}">
+      {% block extrahead %}{% endblock %}
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+  <nav>
+    <div class="navbar">
+      <div class="container nav-container">
+        <div class="logo">
+          <h1>
+            <a href="{% url 'admin_dashboard' %}">
+              HahaLife
+            </a>
+          </h1>
+        </div>
+        <div class="menu-items">
+          <li><a href="{% url 'review_applicant' %}"><i class="ri-survey-line ri-xl"></i>Review</a></li>
+          <li><a href="{% url 'manage_user' %}"><i class="ri-file-user-line ri-xl"></i>Manage User</a></li>
+          <li><a href="{% url 'manage_product' %}"><i class="ri-inbox-line ri-xl"></i>Manage Product</a></li>
+          <li><a href="{% url 'account' %}"><i class="ri-user-settings-line ri-xl"></i>Account</a></li>
+          <li><a href="{% url 'logout' %}"><i class="ri-logout-box-line ri-xl"></i>Logout</a></li>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 HahaLife Shopping. All Rights Reserved</p>
+    </div>
+  </footer>
+</body>
+
+</html>

@@ -18,7 +18,7 @@
             <form method="post" action="/hahalife/myaccount/update/" class="account-form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label>Member ID</label>
+                    <label>{{ user.role|capfirst}} ID</label>
                     <span class="field-value">{{ user.UID }}</span>
                 </div>
                 <div class="form-group">

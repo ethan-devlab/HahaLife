@@ -1,102 +1,109 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
-  --primary-color: #E6E6FA;
-  --secondary-color: #9370DB;
-  --text-color: #483D8B;
-  --light-lavender: #F0F0FF;
-  --border-color: #D8D8FF;
+    --primary-color: #E6E6FA;
+    --secondary-color: #9370DB;
+    --text-color: #483D8B;
+    --light-lavender: #F0F0FF;
+    --border-color: #D8D8FF;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.container {
-  max-width: 1200px;
-  width: 90%;
-  margin: auto;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .navbar {
-  width: 100%;
-  background-color: var(--primary-color);
-  box-shadow: 0 1px 4px rgba(147, 112, 219, 0.15);
+    width: 100%;
+    background-color: var(--primary-color);
+    box-shadow: 0 1px 4px rgba(147, 112, 219, 0.15);
+}
+
+.container {
+    max-width: 1200px;
+    width: 90%;
+    margin: auto;
 }
 
 .nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 62px;
-  padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 62px;
+    padding: 0 20px;
 }
 
-.navbar .menu-items {
-  display: flex;
-  flex-direction: row;
-  background: none;
-  padding-top: 0;
-  box-shadow: none;
-  height: auto;
-  width: auto;
-  transform: none;
-  margin-left: 0;
-  padding-left: 0;
-  transition: none;
-  align-items: center;
+.logo h1 {
+    font-size: 1.5rem;
+    color: var(--text-color);
 }
 
-.navbar .menu-items li {
-  margin-bottom: 0;
-  font-size: 1rem;
-  margin: 0 10px;
+.logo a {
+    text-decoration: none;
+    color: inherit;
 }
 
-.navbar .nav-container li {
-  list-style: none;
+.menu-items {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
 }
 
-.navbar .nav-container a {
-  text-decoration: none;
-  color: var(--text-color);
-  font-weight: 500;
-  font-size: 1.2rem;
-  padding: 0.7rem;
+.menu-items a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s ease;
 }
 
-.navbar .nav-container a:hover {
-  font-weight: bolder;
+.menu-items a:hover {
+    color: var(--secondary-color);
 }
 
-.nav-container .checkbox,
-.nav-container .hamburger-lines {
-  display: none;
-}
-
-.logo {
-  position: static;
-  font-size: 1.2rem;
-  color: var(--text-color);
+.menu-items i {
+    font-size: 1.2rem;
 }
 
 #content {
-  flex: 1;
-  max-width: auto;
-  margin: 0 auto;
-  padding: 2rem;
-  width: 100%;
+    flex: 1;
+    padding: 2rem;
+    background-color: white;
+}
+
+h2 {
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  color: var(--text-color);
+  margin: 1.5rem 0 1rem;
+}
+
+.form-card {
+    background: var(--light-lavender);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
 }
 
 .main-footer {
@@ -113,31 +120,20 @@ body {
     color: var(--text-color);
 }
 
-/* Media query for mobile responsiveness */
 @media screen and (max-width: 768px) {
-  .navbar .menu-items {
-    display: none;
-  }
-  
-  .nav-container .checkbox,
-  .nav-container .hamburger-lines {
-    display: block;
-  }
-  
-  .navbar .menu-items {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    background: var(--primary-color);
-    flex-direction: column;
-    width: 100%;
-    text-align: center;
-    transform: translateX(-150%);
-    padding: 20px 0;
-  }
-  
-  .nav-container input[type="checkbox"]:checked ~ .menu-items {
-    transform: translateX(0);
-    display: flex;
-  }
+    .menu-items {
+        display: none;
+        position: absolute;
+        top: 62px;
+        left: 0;
+        right: 0;
+        background: var(--primary-color);
+        flex-direction: column;
+        padding: 1rem 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-items.active {
+        display: flex;
+    }
 }

@@ -1,0 +1,139 @@
+{% extends 'seller/base.html' %}
+
+{% block title %}
+{{ product.PName }} - Seller Detail
+{% endblock %}
+
+{% block content %}
+<div class="product-container">
+  <h2>Product Detail</h2>
+
+  <div class="product-card">
+    <div class="info-group">
+      <label>PID:</label>
+      <span>{{ product.PID }}</span>
+    </div>
+    <div class="info-group">
+      <label>Name:</label>
+      <span>{{ product.PName }}</span>
+    </div>
+    <div class="info-group">
+      <label>Category:</label>
+      <span>{{ product.Category }}</span>
+    </div>
+    <div class="info-group">
+      <label>Price:</label>
+      <span class="price">NT${{ product.Price }}</span>
+    </div>
+    <div class="info-group">
+      <label>Stock:</label>
+      <span>{{ product.Stock }}</span>
+    </div>
+    <div class="info-group">
+      <label>Description:</label>
+      <p class="description">{{ product.Descript }}</p>
+    </div>
+    <div class="info-group">
+      <label>Tags:</label>
+      <span>{{ product.Tags }}</span>
+    </div>
+    <div class="info-group">
+      <label>Promotions:</label>
+      <span>{{ product.Promotions }}</span>
+    </div>
+  </div>
+
+  <div class="reviews-section">
+    <h3>Reviews</h3>
+    <div class="reviews-list">
+      {% for r in reviews %}
+      <div class="review-card">
+        <div class="review-group">
+          <label>Seller Review:</label>
+          <p>{{ r.seller_review }}</p>
+        </div>
+        <div class="review-group">
+          <label>Buyer Review:</label>
+          <p>{{ r.buyer_review }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .product-card {
+    background: var(--light-lavender);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+  }
+
+  .info-group {
+    margin-bottom: 1rem;
+  }
+
+  .info-group label {
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-right: 0.5rem;
+  }
+
+  .price {
+    color: var(--text-color);
+    font-weight: 600;
+  }
+
+  .description {
+    margin-top: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .reviews-section {
+    margin-top: 2rem;
+  }
+
+  .reviews-section h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .reviews-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .review-card {
+    background: var(--light-lavender);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(147, 112, 219, 0.1);
+  }
+
+  .review-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .review-group label {
+    font-weight: 600;
+    color: var(--secondary-color);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .review-group p {
+    margin: 0;
+    line-height: 1.5;
+  }
+</style>
+{% endblock %}

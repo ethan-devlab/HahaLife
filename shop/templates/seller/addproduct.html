@@ -1,0 +1,139 @@
+{% extends 'seller/base.html' %}
+
+{% block title %}
+Add Product - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="add-product-container">
+  <h2>Add New Product</h2>
+
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+          {% endfor %}
+  </ul>
+  {% endif %}
+
+  <div class="form-card">
+    <form method="post" class="product-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" name="pname" required>
+      </div>
+
+      <div class="form-group">
+        <label>Category *</label>
+        <input type="text" name="category" required>
+      </div>
+
+      <div class="form-group">
+        <label>Price (NT$) *</label>
+        <input type="number" name="price" required min="0" step="1">
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="4" class="description-input"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Stock *</label>
+        <input type="number" name="stock" required min="0">
+      </div>
+
+      <div class="form-group">
+        <label>Tags</label>
+        <small>Separate tags with commas (e.g. electronics, mobile)</small>
+        <input type="text" name="tags" placeholder="e.g. electronics, mobile">
+      </div>
+
+      <div class="form-group">
+        <label>Promotion</label>
+        <select name="promo_code">
+          <option value="">No Promotion</option>
+          {% for promo in promotions %}
+          <option value="{{ promo.PromoCode }}">
+            {{ promo.PromoCode }} - NT${{ promo.DisAmount }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="submit-btn">Add Product</button>
+    </form>
+  </div>
+</div>
+
+<style>
+  .add-product-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .product-form {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  .form-group small {
+    color: #666;
+    font-size: 0.85em;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+  }
+
+  .description-input {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .submit-btn {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+  }
+
+  .submit-btn:hover {
+    background: var(--text-color);
+    transform: translateY(-2px);
+  }
+</style>
+{% endblock %}

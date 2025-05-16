@@ -1,0 +1,16 @@
+{% extends 'shared/base.html' %}
+
+{% block title %}
+Application Submitted - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h2>Application Submitted</h2>
+    <p>Thank you for applying to become a seller. Your application is pending review.</p>
+    <p>We will notify you once your application status changes.</p>
+    <strong><a href="{% url 'login' %}">Check Your Application Status</a></strong>
+</div>
+
+{% endblock %}

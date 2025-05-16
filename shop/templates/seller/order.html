@@ -1,0 +1,90 @@
+{% extends 'seller/base.html' %}
+
+{% block title %}
+Seller Orders - HahaLife Shopping
+{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+  <h2>Your Orders</h2>
+  <div class="table-container">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>SOLD ID</th>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td>{{ o.SHID }}</td>
+          <td>{{ o.OID }}</td>
+          <td>{{ o.SDate }}</td>
+          <td>NT${{ o.TotalPrice }}</td>
+          <td>
+            <a href="/hahalife/seller/order/{{ o.OID }}/" class="btn btn-view">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .orders-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .table-container {
+    background: var(--light-lavender);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    overflow-x: auto;
+  }
+
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .orders-table th {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-weight: 600;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-view {
+    background: var(--secondary-color);
+    color: white;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+  }
+</style>
+{% endblock %}

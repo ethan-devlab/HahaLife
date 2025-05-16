@@ -1,0 +1,227 @@
+{% extends 'seller/base.html' %}
+
+{% block title %}Manage Promotions - HahaLife Shopping{% endblock %}
+
+{% block content %}
+<div class="promotion-page">
+    <h2>Manage Promotions</h2>
+
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+              {% endfor %}
+      </ul>
+      {% endif %}
+
+    <div class="promotion-grid">
+        <!-- Add New Promotion Section -->
+        <div class="form-card add-promotion">
+            <h3>Add New Promotion</h3>
+            <form method="post" class="promotion-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Promotion Code *</label>
+                    <small>3-6 characters, letters and numbers only</small>
+                    <input type="text" name="promo_code" required 
+                           pattern="[A-Za-z0-9]{3,6}" 
+                           title="3-6 characters, letters and numbers only">
+                </div>
+                <div class="form-group">
+                    <label>Discount Amount (NT$) *</label>
+                    <input type="number" name="dis_amount" required min="1">
+                </div>
+                <button type="submit" class="submit-btn">Add Promotion</button>
+            </form>
+        </div>
+
+        <!-- Existing Promotions Section -->
+        <div class="form-card existing-promotions">
+            <h3>Existing Promotions</h3>
+            <div class="table-container">
+                <table class="promotion-table">
+                    <thead>
+                        <tr>
+                            <th>Promotion Code</th>
+                            <th>Discount Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for promo in promotions %}
+                        <tr>
+                            <td>{{ promo.PromoCode }}</td>
+                            <td>NT${{ promo.DisAmount }}</td>
+                            <td>
+                                {% if promo.is_owner %}
+                                <form method="post" class="action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="edit">
+                                    <input type="hidden" name="promo_code" value="{{ promo.PromoCode }}">
+                                    <input type="number" name="dis_amount" value="{{ promo.DisAmount }}" required min="1" class="amount-input">
+                                    <button type="submit" class="action-btn edit-btn">Update</button>
+                                </form>
+                                <form method="post" class="action-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="promo_code" value="{{ promo.PromoCode }}">
+                                    <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this promotion?')">Delete</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .promotion-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .promotion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .form-card {
+        padding: 2rem;
+        background: var(--light-lavender);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    }
+
+    .form-card h3 {
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .promotion-form {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .form-group small {
+        color: #666;
+        font-size: 0.85em;
+    }
+
+    input {
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+    }
+
+    .submit-btn {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .submit-btn:hover {
+        background: var(--text-color);
+        transform: translateY(-2px);
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .promotion-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .promotion-table th,
+    .promotion-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .promotion-table th {
+        background: var(--primary-color);
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+    .action-form {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .amount-input {
+        width: 80px;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+    }
+
+    .action-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .edit-btn {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    .delete-btn {
+        background: #ff4d4d;
+        color: white;
+    }
+
+    .action-btn:hover {
+        filter: brightness(110%);
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+        .promotion-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
