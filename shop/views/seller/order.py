@@ -2,6 +2,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import Http404
 from datetime import datetime
 import random
 import pytz
@@ -27,7 +28,7 @@ def generate_notification_id(oid, mid):
 
 @role_required('seller')
 def order_detail(request, oid):
-    # Fetch sale summary (from SOLDHISTORY)
+    # Fetch sale summary
     sale = execute_query(
         """
         SELECT * FROM SOLDHISTORY WHERE OID = %s
@@ -36,8 +37,9 @@ def order_detail(request, oid):
         fetch=True
     )
     if not sale:
-        return render(request, '404.html')
-    sale = sale[0]
+        raise Http404()
+    
+    sale = sale[0] 
 
     # Fetch order, payment, shipment info
     order = execute_query("SELECT * FROM `ORDER` WHERE OID = %s", (oid,), fetch=True)[0]
@@ -87,7 +89,6 @@ def order_detail(request, oid):
         # Only update and notify if status changed
         if new_ostatus and new_ostatus != current_status['OStatus']:
             execute_query("UPDATE `ORDER` SET OStatus = %s WHERE OID = %s", (new_ostatus, oid))
-            # Notification logic for order status change
             if new_ostatus == "Shipped":
                 notify_msgs.append(f"Your order {oid} has been shipped.")
             elif new_ostatus == "Delivered":

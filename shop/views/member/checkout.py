@@ -70,7 +70,7 @@ def place_order(request):
     ploc = request.POST['pickup_location']
     pay_method = request.POST['pay_method']
     TPE = pytz.timezone('Asia/Taipei')
-    created_at = datetime.now().astimezone(TPE).strftime('%Y-%m-%d %H:%M:%S')
+    created_at = datetime.now(TPE).strftime('%Y-%m-%d %H:%M:%S')
 
     # Fetch all items and group by seller
     items = execute_query(

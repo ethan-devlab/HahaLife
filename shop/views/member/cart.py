@@ -20,8 +20,7 @@ def view_cart(request):
 
     # Fetch cart items
     sql = """
-        SELECT C.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal,
-               S.SName
+        SELECT C.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal, S.SName
         FROM SHOPPINGCART C
         JOIN PRODUCT P ON C.PID = P.PID
         JOIN SELLER S ON P.SID = S.UID
@@ -77,6 +76,7 @@ def add_to_cart(request):
 
             messages.success(request, "Product added to cart successfully!")
             # Primarily returns to the previous page
+            # print(request.META.get('HTTP_REFERER'))
             return redirect(request.META.get('HTTP_REFERER', f'/hahalife/product/{pid}/'))
         
         except Exception as e:

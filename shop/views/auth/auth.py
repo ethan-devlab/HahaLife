@@ -4,6 +4,15 @@ from django.shortcuts import render, redirect
 from ...utils import execute_query
 from django.contrib import messages
 import random
+import pytz
+from datetime import datetime
+
+USER_ROLES = {
+    'member': 'MEMBER',
+    'seller': 'SELLER',
+    'admin': 'ADMIN',
+    'applicant': 'APPLICANT',
+}
 
 
 def login_view(request):
@@ -11,13 +20,7 @@ def login_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user_roles = {
-            'member': 'MEMBER',
-            'seller': 'SELLER',
-            'admin': 'ADMIN',
-        }
-
-        for role, table in user_roles.items():
+        for role, table in USER_ROLES.items():
             sql = f"SELECT * FROM {table} WHERE Email=%s AND Password=%s AND AccStatus='Active'"
             result = execute_query(sql, (email, password), fetch=True)
             if result:
@@ -89,12 +92,19 @@ def register_view(request):
 
 def guest_view(request):
     uid = "G" + str(random.randint(100000000, 999999999))
-    while execute_query("SELECT * FROM MEMBER WHERE UID = %s", (uid,), fetch=True):
+    while execute_query("SELECT * FROM GUEST WHERE UID = %s", (uid,), fetch=True):
         uid = "G" + str(random.randint(100000000, 999999999))
     request.session['uid'] = uid
     request.session['role'] = 'guest'
     request.session['uname'] = 'Guest'
     request.session.set_expiry(60 * 60 * 2)  # 2 hours
+    TPE = pytz.timezone('Asia/Taipei')
+    now = str(datetime.now(TPE).strftime('%Y%m%d%H%M%S'))
+    name = f"G{now}"
+    execute_query(
+        "INSERT INTO GUEST (UID, UName) VALUES (%s, %s)",
+        (uid, name)
+    )
     return redirect(f'/hahalife/')
 
 

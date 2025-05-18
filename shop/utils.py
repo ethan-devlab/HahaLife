@@ -4,6 +4,13 @@ import mysql.connector
 from functools import wraps
 from django.shortcuts import redirect
 
+USER_ROLES = {
+    'member': 'MEMBER',
+    'seller': 'SELLER',
+    'admin': 'ADMIN',
+    'applicant': 'APPLICANT',
+    'guest': 'GUEST',
+}
 
 def get_connection():
     return mysql.connector.connect(
@@ -31,20 +38,18 @@ def role_required(*roles):
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
+            uid = request.session.get('uid')
             user_role = request.session.get('role')
-            if user_role not in roles or not request.session.get('uid'):
+            table = USER_ROLES.get(user_role)
+            if user_role not in roles or not uid:
                 return redirect('login')
+            if user_role != 'applicant':
+                sql = f"SELECT * FROM {table} WHERE UID=%s"
+                if user_role != 'guest':
+                    sql += " AND AccStatus='Active'"
+                result = execute_query(sql, (uid,), fetch=True)
+                if not result:
+                    return redirect('login')
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator
-
-
-# def role_required(role):
-#     def decorator(view_func):
-#         @wraps(view_func)
-#         def wrapper(request, *args, **kwargs):
-#             if request.session.get('role') != role or not request.session.get('uid'):
-#                 return redirect('/hahalife/login/')
-#             return view_func(request, *args, **kwargs)
-#         return wrapper
-#     return decorator
