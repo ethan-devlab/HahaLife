@@ -39,6 +39,8 @@
                         <th>Product</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
+                        <th>Promo Code</th>
+                        <th>Discount</th>
                         <th>Subtotal</th>
                         <th>Review</th>
                     </tr>
@@ -49,6 +51,20 @@
                         <td>{{ p.PName }}</td>
                         <td>{{ p.Quantity }}</td>
                         <td>NT${{ p.UPrice }}</td>
+                        <td>
+                            {% if p.PromoCode %}
+                            {{ p.PromoCode }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if p.DisAmount %}
+                            NT${{ p.DisAmount }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
                         <td>NT${{ p.Subtotal }}</td>
                         <td>
                             <form method="post" action="{% url 'submit_member_review' order.OID p.PID %}">
@@ -80,7 +96,7 @@
 
 <style>
     .order-detail {
-        max-width: 1000px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 20px;
     }
@@ -166,6 +182,11 @@
     .review-input:focus {
         border-color: var(--secondary-color);
         outline: none;
+    }
+
+    .review-input[readonly] {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
     }
 
     .review-btn {

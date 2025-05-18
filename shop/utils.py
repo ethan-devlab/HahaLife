@@ -33,7 +33,7 @@ def role_required(*roles):
         def wrapper(request, *args, **kwargs):
             user_role = request.session.get('role')
             if user_role not in roles or not request.session.get('uid'):
-                return redirect('/hahalife/login/')
+                return redirect('login')
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator

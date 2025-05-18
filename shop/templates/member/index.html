@@ -1,4 +1,5 @@
 {% extends 'member/base.html' %}
+{% load split %}
 
 {% block title %}HahaLife Shopping{% endblock %}
 
@@ -71,9 +72,20 @@
                     <span class="product-category">{{ p.Category }}</span>
                     <span class="product-price">NT${{ p.Price }}</span>
                 </div>
-                {% if p.Stock == 0 %}
-                <strong class="stock-status">Out of stock</strong>
-                {% endif %}
+                <div class="product-tags">
+                    {% for t in p.Tags|split:"," %}
+                        <span class="product-tag">{{ t }}</span>
+                    {% endfor %}
+                </div>
+                <div class="product-details">
+                    {% if p.HasPromo %}
+                        <span class="discount"> -NT${{ p.DisAmount }}</span>
+                    {% endif %}
+                    {% if p.Stock == 0 %}
+                        <strong class="stock-status">Out of stock</strong>
+                    {% endif %}
+                </div>
+
                 <a href="/hahalife/products/{{ p.PID }}/" class="view-details-btn">View Details</a>
             </li>
             {% endfor %}
@@ -223,6 +235,27 @@
     .brief-product .sold-count {
         font-size: 0.9em;
         color: #666;
+    }
+
+    .product-tags {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .product-tag {
+        background: var(--third-color);
+        color: white;
+        padding: 5px;
+        border-radius: 4px;
+    }
+    .product-category {
+        font-weight: bold;
+    }
+
+    .discount {
+        color: #e44d26;
+        font-weight: bold;
     }
 
     .stock-status {

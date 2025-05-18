@@ -82,7 +82,6 @@
     transform: translateY(-2px);
 }
 
-/*
 .messages {
     list-style: none;
     padding: 0;
@@ -118,5 +117,4 @@
     background-color: #d9edf7;
     color: #31708f;
     border: 1px solid #bce8f1;
-}}
-*/
+}

@@ -6,7 +6,7 @@ Order Detail - {{ sale.OID }}
 
 {% block content %}
 <div class="order-detail">
-  <h2>Order Detail</h2>
+  <h2>Order Detail #{{ sale.OID }}</h2>
 
   {% if messages %}
   <ul class="messages">
@@ -47,11 +47,26 @@ Order Detail - {{ sale.OID }}
         <div class="form-group">
           <label>Order Status:</label>
           <select name="ostatus" class="status-select">
-            <option {% if sale.OStatus == 'Processing' %}selected{% endif %}>Processing</option>
-            <option {% if sale.OStatus == 'Shipped' %}selected{% endif %}>Shipped</option>
-            <option {% if sale.OStatus == 'Delivered' %}selected{% endif %}>Delivered</option>
-            <option {% if sale.OStatus == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            <option {% if order.OStatus == 'Processing' %}selected{% endif %}>Processing</option>
+            <option {% if order.OStatus == 'Shipped' %}selected{% endif %}>Shipped</option>
+            <option {% if order.OStatus == 'Delivered' %}selected{% endif %}>Delivered</option>
+            <option {% if order.OStatus == 'Cancelled' %}selected{% endif %}>Cancelled</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Shipment Status:</label>
+          <select name="ship_status" class="status-select">
+            <option {% if ship.ShipStatus == 'Preparing' %}selected{% endif %}>Preparing</option>
+            <option {% if ship.ShipStatus == 'In Transit' %}selected{% endif %}>In Transit</option>
+            <option {% if ship.ShipStatus == 'Delivered' %}selected{% endif %}>Delivered</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Payment Method:</label>
+          <input type="text" name="payment_method" value="{{ payment.PayMethod }}" readonly>
         </div>
         <div class="form-group">
           <label>Payment Status:</label>
@@ -65,12 +80,8 @@ Order Detail - {{ sale.OID }}
 
       <div class="form-row">
         <div class="form-group">
-          <label>Shipment Status:</label>
-          <select name="ship_status" class="status-select">
-            <option {% if ship.ShipStatus == 'Preparing' %}selected{% endif %}>Preparing</option>
-            <option {% if ship.ShipStatus == 'In Transit' %}selected{% endif %}>In Transit</option>
-            <option {% if ship.ShipStatus == 'Delivered' %}selected{% endif %}>Delivered</option>
-          </select>
+          <label>Tracking Number:</label>
+          <input type="text" name="track_number" value="{{ ship.TrackNumber }}" readonly>
         </div>
         <div class="form-group">
           <label>Courier:</label>
@@ -78,9 +89,11 @@ Order Detail - {{ sale.OID }}
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Tracking Number:</label>
-        <input type="text" name="track_number" value="{{ ship.TrackNumber }}" readonly>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Shipping Address:</label>
+          <input type="text" name="ship_addr" value="{{ order.Address }}" readonly>
+        </div>
       </div>
 
       <button type="submit" class="btn update-btn">Update Order Status</button>
@@ -90,13 +103,15 @@ Order Detail - {{ sale.OID }}
   <!-- Products Section -->
   <div class="products-section">
     <h3>Products</h3>
-    <div class="table-container">
-      <table class="products-table">
+    <div class="products-table">
+      <table>
         <thead>
           <tr>
             <th>Product</th>
             <th>Quantity</th>
             <th>Unit Price</th>
+            <th>Promo Code</th>
+            <th>Discount</th>
             <th>Subtotal</th>
             <th>Reviews</th>
           </tr>
@@ -107,22 +122,24 @@ Order Detail - {{ sale.OID }}
             <td>{{ p.PName }}</td>
             <td>{{ p.Quantity }}</td>
             <td>NT${{ p.UPrice }}</td>
+            <td>
+              {% if p.PromoCode %}{{ p.PromoCode }}{% else %}-{% endif %}
+            </td>
+            <td>
+              {% if p.DisAmount %}NT${{ p.DisAmount }}{% else %}-{% endif %}
+            </td>
             <td>NT${{ p.Subtotal }}</td>
             <td>
-              <form method="post" action="{% url 'submit_seller_review' sale.OID p.PID %}" class="review-form">
+              <form method="post" action="{% url 'submit_seller_review' sale.OID p.PID %}">
                 {% csrf_token %}
-                <div class="review-content">
-                  <div class="review-group">
-                    <label>Your Review:</label>
-                    <textarea name="sell_r" class="review-input"
-                      maxlength="100">{% if p.Sell_R %}{{ p.Sell_R }}{% else %}No review yet.{% endif %}</textarea>
-                  </div>
-                  <div class="review-group">
-                    <label>Buyer's Review:</label>
-                    <textarea readonly
-                      class="review-input">{% if p.Buy_R %}{{ p.Buy_R }}{% else %}No review yet.{% endif %}</textarea>
-                  </div>
-                  <button type="submit" class="btn submit-review-btn">Submit Review</button>
+                <div class="review-form">
+                  <label>Your Review</label>
+                  <textarea name="sell_r" class="review-input"
+                    maxlength="100">{% if p.Sell_R %}{{ p.Sell_R }}{% else %}No review yet.{% endif %}</textarea>
+                  <label>Buyer's Review</label>
+                  <textarea readonly
+                    class="review-input">{% if p.Buy_R %}{{ p.Buy_R }}{% else %}No review yet.{% endif %}</textarea>
+                  <button type="submit" class="review-btn">Submit Review</button>
                 </div>
               </form>
             </td>
@@ -232,49 +249,77 @@ Order Detail - {{ sale.OID }}
     transform: translateY(-2px);
   }
 
+  /* --- Products Section Styling (copied/adapted from purchased_detail.html) --- */
+  .products-section h3 {
+      color: var(--text-color);
+      margin-bottom: 15px;
+  }
+
   .products-table {
-    width: 100%;
-    border-collapse: collapse;
+      background: var(--light-lavender);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+      overflow-x: auto;
   }
 
-  .products-table th,
-  .products-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
+  table {
+      width: 100%;
+      border-collapse: collapse;
   }
 
-  .products-table th {
-    background: var(--primary-color);
-    color: var(--text-color);
-    font-weight: 600;
+  th,
+  td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+  }
+
+  th {
+      background: var(--primary-color);
+      color: var(--text-color);
+      font-weight: 600;
   }
 
   .review-form {
-    max-width: 100%;
-  }
-
-  .review-content {
-    display: grid;
-    gap: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 100%;
   }
 
   .review-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    resize: vertical;
-    min-height: 80px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      resize: vertical;
+      min-height: 60px;
+      background: white;
   }
 
   .review-input:focus {
-    outline: none;
-    border-color: var(--secondary-color);
+      border-color: var (--secondary-color);
+      outline: none;
   }
 
   .review-input[readonly] {
-    background-color: #f5f5f5;
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+  }
+
+  .review-btn {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+  }
+
+  .review-btn:hover {
+      background: var(--text-color);
+      transform: translateY(-2px);
   }
 
   @media (max-width: 768px) {

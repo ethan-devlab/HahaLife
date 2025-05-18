@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect
 from ...utils import execute_query
 from django.contrib import messages
-import datetime
+import random
 
 
 def login_view(request):
@@ -88,7 +88,9 @@ def register_view(request):
 
 
 def guest_view(request):
-    uid = "G" + str(int(datetime.datetime.timestamp(datetime.datetime.now())))
+    uid = "G" + str(random.randint(100000000, 999999999))
+    while execute_query("SELECT * FROM MEMBER WHERE UID = %s", (uid,), fetch=True):
+        uid = "G" + str(random.randint(100000000, 999999999))
     request.session['uid'] = uid
     request.session['role'] = 'guest'
     request.session['uname'] = 'Guest'

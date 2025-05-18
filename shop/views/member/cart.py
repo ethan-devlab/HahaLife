@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from ...utils import execute_query, role_required
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -43,8 +44,7 @@ def view_cart(request):
         """
         promo_records = execute_query(sql2, pids, fetch=True)
         for pr in promo_records:
-            promo_map.setdefault(pr['PID'], {})[pr['PromoCode']] = pr[
-                'DisAmount']  # Discount per unit :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+            promo_map.setdefault(pr['PID'], {})[pr['PromoCode']] = pr['DisAmount']
 
     return render(request, 'member/cart.html', {
         'items': items,
@@ -65,17 +65,23 @@ def add_to_cart(request):
         pid = request.POST.get('pid')
         qty = int(request.POST.get('quantity'))
 
-        check = execute_query("SELECT * FROM SHOPPINGCART WHERE CartID = %s AND PID = %s", (cart_id, pid), fetch=True)
-        if check:
-            execute_query("UPDATE SHOPPINGCART SET Quantity = Quantity + %s WHERE CartID = %s AND PID = %s",
-                          (qty, cart_id, pid))
-        else:
-            execute_query("INSERT INTO SHOPPINGCART (CartID, PID, Quantity) VALUES (%s, %s, %s)",
-                          (cart_id, pid, qty))
-            execute_query("INSERT INTO ADDED_TO (CartID, PID) VALUES (%s, %s)", (cart_id, pid))
+        try:
+            check = execute_query("SELECT * FROM SHOPPINGCART WHERE CartID = %s AND PID = %s", (cart_id, pid), fetch=True)
+            if check:
+                execute_query("UPDATE SHOPPINGCART SET Quantity = Quantity + %s WHERE CartID = %s AND PID = %s",
+                            (qty, cart_id, pid))
+            else:
+                execute_query("INSERT INTO SHOPPINGCART (CartID, PID, Quantity) VALUES (%s, %s, %s)",
+                            (cart_id, pid, qty))
+                execute_query("INSERT INTO ADDED_TO (CartID, PID) VALUES (%s, %s)", (cart_id, pid))
 
-        # Primarily returns to the previous page
-        return redirect(request.META.get('HTTP_REFERER', f'/hahalife/product/{pid}/'))
+            messages.success(request, "Product added to cart successfully!")
+            # Primarily returns to the previous page
+            return redirect(request.META.get('HTTP_REFERER', f'/hahalife/product/{pid}/'))
+        
+        except Exception as e:
+            messages.error(request, f"Error adding product to cart: {str(e)}")
+
     return redirect('/hahalife/')
 
 

@@ -26,7 +26,7 @@ def add_product(request):
         sid = request.session['uid']
         # Generate PID
         next_id = execute_query(
-            """
+                """
                 SELECT LPAD(COUNT(*)+1, 9, '0') AS next_id FROM PRODUCT
                 """, fetch=True)[0]['next_id']
         pid = f"P{next_id}"
@@ -76,7 +76,6 @@ def manage_products(request):
 def product_detail_s(request, pid):
     # if request.session.get('role') != 'seller':
     #     return redirect('/hahalife/login/')
-    # Fetch product with tags and promotions aggregated
     product = execute_query(
         """
         SELECT P.PID,

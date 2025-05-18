@@ -62,22 +62,22 @@ def update_account(request):
     phone = request.POST.get('phone')
     password = request.POST.get('password')
 
-    # Validate if email or phone is unique
+    # Validate if email or phone or shop name is unique
     if email:
         sql = f"SELECT UID FROM {table} WHERE Email = %s AND UID != %s"
         if execute_query(sql, (email, uid), fetch=True):
             messages.error(request, 'Email already exists.')
-            return redirect('/hahalife/myaccount/')
+            return redirect('account')
     if phone:
         sql = f"SELECT UID FROM {table} WHERE PhoneNumber = %s AND UID != %s"
         if execute_query(sql, (phone, uid), fetch=True):
             messages.error(request, 'Phone number already exists.')
-            return redirect('/hahalife/myaccount/')
+            return redirect('account')
     if sname:
         sql = f"SELECT UID FROM {table} WHERE SName = %s AND UID != %s"
         if execute_query(sql, (sname, uid), fetch=True):
             messages.error(request, 'Shop name already exists.')
-            return redirect('/hahalife/myaccount/')
+            return redirect('account')
 
     params = [uname, email, address, phone]
     sql = f"""

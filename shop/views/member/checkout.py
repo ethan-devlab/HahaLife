@@ -1,8 +1,10 @@
 # coding=utf-8
 
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from ...utils import execute_query, role_required
 from datetime import datetime
+import pytz
 import random
 import json
 
@@ -67,7 +69,8 @@ def place_order(request):
     shipping = request.POST['shipping']
     ploc = request.POST['pickup_location']
     pay_method = request.POST['pay_method']
-    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    TPE = pytz.timezone('Asia/Taipei')
+    created_at = datetime.now().astimezone(TPE).strftime('%Y-%m-%d %H:%M:%S')
 
     # Fetch all items and group by seller
     items = execute_query(
@@ -88,9 +91,8 @@ def place_order(request):
             seller_items[item['SID']] = []
         seller_items[item['SID']].append(item)
 
-    order_ids = []  # Store all created order IDs
+    order_ids = []
 
-    # Process orders for each seller
     for seller_id, seller_products in seller_items.items():
         # Generate unique OID
         while True:
@@ -101,50 +103,11 @@ def place_order(request):
 
         order_ids.append(oid)
         seller_total = 0
-        seller_promo_codes = []
+        used_promo_codes = set()
+        item_promos = []  # To record tuples: (promo_code, oid, pid)
+        order_details = []  # To record tuples: (oid, pid, qty, price, subtotal)
 
-        # Calculate total and handle promos for this seller's items
-        for item in seller_products:
-            item_total = item['Quantity'] * item['Price']
-            code = request.POST.get(f'promo_{item["PID"]}', '').strip()
-            if code:
-                promo_info = execute_query(
-                    """
-                    SELECT PR.DisAmount
-                    FROM PROMOTION PR
-                    JOIN HAS_PROMO HP ON PR.PromoCode = HP.PromoCode
-                    WHERE PR.PromoCode = %s AND HP.PID = %s
-                    """,
-                    [code, item['PID']],
-                    fetch=True
-                )
-                if promo_info:
-                    item_total -= promo_info[0]['DisAmount']
-                    seller_promo_codes.append(code)
-            seller_total += item_total
-
-        # Insert seller-specific order
-        execute_query(
-            """
-            INSERT INTO `ORDER`
-              (OID, OStatus, SID, Address, TotalAmount, MID, CreatedAt)
-            VALUES
-              (%s, 'Processing', %s, %s, %s, %s, %s)
-            """,
-            (oid, seller_id, address, seller_total, uid, created_at)
-        )
-
-        # Insert promo codes used
-        for promo_code in seller_promo_codes:
-            execute_query(
-                """
-                INSERT INTO USE_PROMO (PromoCode, OID)
-                VALUES (%s, %s)
-                """,
-                (promo_code, oid)
-            )
-
-        # Insert order details for each product
+        # Calculate subtotal, promo, and collect info (DO NOT INSERT YET)
         for item in seller_products:
             item_discount = 0
             promo_code = request.POST.get(f'promo_{item["PID"]}', '').strip()
@@ -161,14 +124,41 @@ def place_order(request):
                 )
                 if promo_info:
                     item_discount = promo_info[0]['DisAmount']
-
+                    item_promos.append((promo_code, oid, item['PID']))
+                    used_promo_codes.add(promo_code)
             subtotal = (item['Quantity'] * item['Price']) - item_discount
+            seller_total += subtotal
+            order_details.append((oid, item['PID'], item['Quantity'], item['Price'], subtotal))
+
+        # NOW insert the order
+        execute_query(
+            """
+            INSERT INTO `ORDER`
+            (OID, OStatus, SID, Address, TotalAmount, MID, CreatedAt)
+            VALUES
+            (%s, 'Processing', %s, %s, %s, %s, %s)
+            """,
+            (oid, seller_id, address, seller_total, uid, created_at)
+        )
+
+        # Insert order details
+        for detail in order_details:
             execute_query(
                 """
                 INSERT INTO ORDER_DETAIL (OID, PID, Quantity, UPrice, Subtotal)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
-                (oid, item['PID'], item['Quantity'], item['Price'], subtotal)
+                detail
+            )
+
+        # Insert promo codes used (item-level)
+        for promo_code, oid, pid in item_promos:
+            execute_query(
+                """
+                INSERT INTO USE_PROMO (PromoCode, OID, PID)
+                VALUES (%s, %s, %s)
+                """,
+                (promo_code, oid, pid)
             )
 
         # Payment for this order
@@ -205,14 +195,14 @@ def place_order(request):
             (ohid, oid, uid, created_at, seller_total, 'Processing', pay_method)
         )
 
-        # Sold history for this order
+        # Sold history for this order (all used promo codes, comma separated)
         execute_query(
             """
             INSERT INTO SOLDHISTORY (SHID, OID, SID, PromoCode, PayMethod, SDate, TotalPrice, BID, Quantity)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
-                'SH' + seller_id[8:10] + oid[-6:], oid, seller_id, ','.join(seller_promo_codes),
+                'SH' + seller_id[8:10] + oid[-6:], oid, seller_id, ','.join(used_promo_codes),
                 pay_method, created_at, seller_total, uid, sum(item['Quantity'] for item in seller_products)
             )
         )
@@ -234,3 +224,9 @@ def place_order(request):
         execute_query("DELETE FROM SHOPPINGCART WHERE CartID = %s AND PID = %s", (cart_id, pid))
 
     return render(request, 'member/checkout_success.html')
+
+
+# for testing purpose
+# @role_required('member')
+# def checkout_success(request):
+#     return render(request, 'member/checkout_success.html')

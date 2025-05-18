@@ -30,6 +30,7 @@ urlpatterns = [
     path('cart/update/<str:pid>/', cart.update_quantity, name='update_quantity'),
     path('checkout/', checkout.checkout_view, name='checkout'),
     path('checkout/place/', checkout.place_order, name='place_order'),
+    # path('checkout/success/', checkout.checkout_success, name='order_success'),  # for testing purpose
     path('mypurchase/', purchase.purchase_list, name='mypurchase'),
     path('mypurchase/<str:oid>/', purchase.purchase_detail, name='purchase_detail'),
     path('mypurchase/<str:oid>/cancel/', purchase.cancel_order, name='cancel_order'),
@@ -44,7 +45,7 @@ urlpatterns = [
     path('seller/product/delete/<str:pid>/', s_product.delete_product, name='delete_product'),
     path('seller/promotion/', s_product.add_promotion, name='add_promotion'),
     path('seller/order/', order.order_list, name='seller_order_list'),
-    path('seller/order/<str:oid>/', order.order_detail_s, name='seller_order_detail'),
+    path('seller/order/<str:oid>/', order.order_detail, name='seller_order_detail'),
     path('seller/order/<str:oid>/review/<str:pid>/', order.submit_seller_review, name='submit_seller_review'),
 
     path('admin/review-applicant/', review.review_applicant, name='review_applicant'),

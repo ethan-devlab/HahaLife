@@ -22,10 +22,7 @@ def purchase_list(request):
 
 @role_required('member')
 def purchase_detail(request, oid):
-    uid = request.session.get('uid')
-    # if not uid:
-    #     return redirect('/hahalife/login/')
-
+    # Order-level info
     order_info = execute_query("""
         SELECT OH.*, PB.PayMethod, PB.PayStatus, CR.Courier, CR.TrackNumber, CR.ShipStatus
         FROM ORDERHISTORY OH
@@ -34,11 +31,15 @@ def purchase_detail(request, oid):
         WHERE OH.OID = %s
     """, (oid,), fetch=True)[0]
 
+    # Product details (with promo and review)
     products = execute_query("""
         SELECT OD.PID, P.PName, OD.Quantity, OD.UPrice, OD.Subtotal,
+               UP.PromoCode, PR.DisAmount,
                R.Sell_R, R.Buy_R
         FROM ORDER_DETAIL OD
         JOIN PRODUCT P ON OD.PID = P.PID
+        LEFT JOIN USE_PROMO UP ON OD.OID = UP.OID AND OD.PID = UP.PID
+        LEFT JOIN PROMOTION PR ON UP.PromoCode = PR.PromoCode
         LEFT JOIN REVIEW R ON OD.PID = R.PID AND R.RevID = CONCAT('R', RIGHT(%s, 5), RIGHT(OD.PID, 3))
         WHERE OD.OID = %s
     """, (oid, oid), fetch=True)
