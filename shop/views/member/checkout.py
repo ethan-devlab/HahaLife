@@ -183,30 +183,6 @@ def place_order(request):
             )
         )
 
-        # Order history for this order
-        ohid = 'OH' + uid[8:10] + oid[-6:]
-        execute_query(
-            """
-            INSERT INTO ORDERHISTORY
-              (OHID, OID, MID, OrderDate, TotalAmount, OStatus, PayMethod)
-            VALUES
-              (%s, %s, %s, %s, %s, %s, %s)
-            """,
-            (ohid, oid, uid, created_at, seller_total, 'Processing', pay_method)
-        )
-
-        # Sold history for this order (all used promo codes, comma separated)
-        execute_query(
-            """
-            INSERT INTO SOLDHISTORY (SHID, OID, SID, PromoCode, PayMethod, SDate, TotalPrice, BID, Quantity)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """,
-            (
-                'SH' + seller_id[8:10] + oid[-6:], oid, seller_id, ','.join(used_promo_codes),
-                pay_method, created_at, seller_total, uid, sum(item['Quantity'] for item in seller_products)
-            )
-        )
-
         # Deduct stock for this seller's products
         for item in seller_products:
             execute_query(

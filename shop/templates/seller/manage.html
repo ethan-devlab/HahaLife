@@ -10,109 +10,160 @@
     <a href="{% url 'seller_order_list' %}" class="btn btn-view">View Orders</a>
   </div>
   {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
       {% endfor %}
-    </ul>
-    {% endif %}
-  <div class="table-container">
-    <table class="products-table">
-      <thead>
-        <tr>
-          <th>PID</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Price</th>
-          <th>Stock</th>
-          <th>Tags</th>
-          <th>Promotions</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for p in products %}
-        <tr>
-          <td>{{ p.PID }}</td>
-          <td>{{ p.PName }}</td>
-          <td>{{ p.Category }}</td>
-          <td>NT${{ p.Price }}</td>
-          <td>{{ p.Stock }}</td>
-          <td>{{ p.Tags }}</td>
-          <td>{{ p.PromoCodes }}</td>
-          <td class="actions">
-            <a href="{% url 'seller_product_detail' p.PID %}" class="btn btn-view">View</a>
-            <a href="{% url 'edit_product' p.PID %}" class="btn btn-edit">Edit</a>
-            <a href="{% url 'delete_product' p.PID %}" class="btn btn-del">Delete</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  </ul>
+  {% endif %}
+  {% if products %}
+  <div class="product-list">
+    {% for p in products %}
+    <div class="product-item">
+      <div class="product-header">
+        <span class="product-name">{{ p.PName }}</span>
+        <span class="product-id">#{{ p.PID }}</span>
+      </div>
+      <div class="product-details">
+        <div class="product-info">
+          <span class="category">{{ p.Category }}</span>
+          <span class="price">NT${{ p.Price }}</span>
+          <span class="stock">Stock: {{ p.Stock }}</span>
+        </div>
+        <div class="product-tags">
+          <span>Tags: {{ p.Tags }}</span>
+        </div>
+        <div class="product-promos">
+          <span>Promotions: {{ p.PromoCodes }}</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a href="{% url 'seller_product_detail' p.PID %}" class="btn btn-view">View</a>
+        <a href="{% url 'edit_product' p.PID %}" class="btn btn-edit">Edit</a>
+        <a href="{% url 'delete_product' p.PID %}" class="btn btn-del">Delete</a>
+      </div>
+    </div>
+    {% endfor %}
   </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No products available.</p>
+  </div>
+  {% endif %}
 </div>
 
 <style>
   .manage-container {
-    max-width: 1400px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
   }
 
-  .table-container {
-    background: var(--light-lavender);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
-    overflow-x: auto;
-  }
-
-  .products-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-bottom: 1rem;
-  }
-
-  .products-table th,
-  .products-table td {
-    padding: 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .products-table th {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .products-table tr:last-child td {
-    border-bottom: none;
-  }
-
-  .products-table tbody tr:hover {
-    background-color: rgba(147, 112, 219, 0.05);
-  }
-
-  .actions, primary-actions {
+  .primary-actions {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-  }
-
-  .primary-actions {
     margin-bottom: 20px;
   }
 
+  .product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .product-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 18px;
+    background: var(--light-lavender);
+    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .product-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(147, 112, 219, 0.22);
+  }
+
+  .product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+
+  .product-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+  }
+
+  .product-id {
+    color: var(--text-color);
+    font-size: 0.95em;
+    opacity: 0.7;
+  }
+
+  .product-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .product-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    font-size: 1em;
+  }
+
+  .category {
+    background: var(--primary-color);
+    color: var(--text-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+
+  .price {
+    font-weight: bold;
+    color: var(--secondary-color);
+  }
+
+  .stock {
+    color: var(--text-color);
+    font-size: 0.95em;
+  }
+
+  .product-tags,
+  .product-promos {
+    font-size: 0.95em;
+    color: var(--text-color);
+    opacity: 0.85;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
   .btn {
-    padding: 8px 16px;
+    padding: 7px 14px;
     border-radius: 6px;
     text-decoration: none;
     font-weight: 500;
     color: white;
     transition: all 0.2s ease;
+    font-size: 1em;
   }
 
   .btn-view {
@@ -137,19 +188,36 @@
     box-shadow: 0 2px 8px rgba(147, 112, 219, 0.2);
   }
 
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-color);
+    background: var(--light-lavender);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-top: 30px;
+  }
+
   @media (max-width: 768px) {
-    .products-table th,
-    .products-table td {
-      padding: 12px 8px;
-      font-size: 14px;
+    .manage-container {
+      padding: 10px;
     }
 
-    .btn {
-      padding: 6px 12px;
-      font-size: 13px;
+    .product-item {
+      padding: 12px;
     }
 
     .actions {
+      gap: 6px;
+    }
+
+    .btn {
+      padding: 6px 10px;
+      font-size: 0.95em;
+    }
+
+    .product-details {
+      flex-direction: column;
       gap: 6px;
     }
   }

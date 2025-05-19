@@ -2,7 +2,6 @@
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import Http404
 from datetime import datetime
 import random
 import pytz
@@ -13,7 +12,7 @@ from ...utils import execute_query, role_required
 def order_list(request):
     sid = request.session['uid']
     orders = execute_query(
-        "SELECT SHID, OID, SDate, TotalPrice FROM SOLDHISTORY WHERE SID = %s ORDER BY SDate DESC",
+        "SELECT OID, CreatedAt, OStatus, TotalAmount FROM `ORDER` WHERE SID = %s ORDER BY CreatedAt DESC",
         (sid,), fetch=True
     )
     return render(request, 'seller/order.html', {'orders': orders})
@@ -28,19 +27,6 @@ def generate_notification_id(oid, mid):
 
 @role_required('seller')
 def order_detail(request, oid):
-    # Fetch sale summary
-    sale = execute_query(
-        """
-        SELECT * FROM SOLDHISTORY WHERE OID = %s
-        """,
-        (oid,),
-        fetch=True
-    )
-    if not sale:
-        raise Http404()
-    
-    sale = sale[0] 
-
     # Fetch order, payment, shipment info
     order = execute_query("SELECT * FROM `ORDER` WHERE OID = %s", (oid,), fetch=True)[0]
     payment = execute_query("SELECT * FROM PAID_BY WHERE OID = %s", (oid,), fetch=True)
@@ -99,7 +85,7 @@ def order_detail(request, oid):
         if new_ship_status and new_ship_status != current_status['ShipStatus']:
             execute_query("UPDATE `CREATE` SET ShipStatus = %s WHERE OID = %s", (new_ship_status, oid))
             if new_ship_status == "In Transit":
-                notify_msgs.append(f"Your order {oid} is now in transit. Tracking number: {new_track_number}.")
+                notify_msgs.append(f"Your order {oid} is now in transit. Tracking number: {ship['TrackNumber']}.")
             elif new_ship_status == "Delivered":
                 notify_msgs.append(f"Order {oid} was delivered successfully. If you have any questions, please contact support.")
 
@@ -132,7 +118,6 @@ def order_detail(request, oid):
         return redirect(request.path)
 
     return render(request, 'seller/order_detail.html', {
-        'sale': sale,
         'order': order,
         'payment': payment,
         'ship': ship,

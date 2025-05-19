@@ -1,10 +1,7 @@
 # coding=utf-8
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from ...utils import execute_query, role_required
-from datetime import datetime
-from tzlocal import get_localzone
-import pytz
 
 
 @role_required('member', 'guest')
@@ -79,8 +76,6 @@ def product_list(request):
         sql += " ORDER BY P.Price DESC"
 
     products = execute_query(sql, params, fetch=True)
-
-    print(products)
 
     categories = execute_query("SELECT DISTINCT Category FROM PRODUCT", fetch=True)
     tags = execute_query("SELECT DISTINCT Tag FROM PRODUCT_TAG", fetch=True)

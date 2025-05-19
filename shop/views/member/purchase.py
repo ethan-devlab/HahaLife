@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from ...utils import execute_query, role_required
 
 
@@ -10,11 +11,11 @@ def purchase_list(request):
     # if not uid:
     #     return redirect('/hahalife/login/')
     sql = """
-        SELECT OH.OID, OH.OrderDate, OH.TotalAmount, OH.OStatus, PB.PayMethod, PB.PayStatus
-        FROM ORDERHISTORY OH
-        LEFT JOIN PAID_BY PB ON OH.OID = PB.OID
-        WHERE OH.MID = %s
-        ORDER BY OH.OrderDate DESC
+        SELECT O.OID, O.CreatedAt, O.TotalAmount, O.OStatus, PB.PayMethod, PB.PayStatus
+        FROM `ORDER` O
+        LEFT JOIN PAID_BY PB ON O.OID = PB.OID
+        WHERE O.MID = %s
+        ORDER BY O.CreatedAt DESC
     """
     history = execute_query(sql, (uid,), fetch=True)
     return render(request, 'member/purchase.html', {'orders': history})
@@ -24,11 +25,11 @@ def purchase_list(request):
 def purchase_detail(request, oid):
     # Order-level info
     order_info = execute_query("""
-        SELECT OH.*, PB.PayMethod, PB.PayStatus, CR.Courier, CR.TrackNumber, CR.ShipStatus
-        FROM ORDERHISTORY OH
-        LEFT JOIN PAID_BY PB ON OH.OID = PB.OID
-        LEFT JOIN `CREATE` CR ON OH.OID = CR.OID
-        WHERE OH.OID = %s
+        SELECT O.*, PB.PayMethod, PB.PayStatus, CR.Courier, CR.TrackNumber, CR.ShipStatus
+        FROM `ORDER` O
+        LEFT JOIN PAID_BY PB ON O.OID = PB.OID
+        LEFT JOIN `CREATE` CR ON O.OID = CR.OID
+        WHERE O.OID = %s
     """, (oid,), fetch=True)[0]
 
     # Product details (with promo and review)
@@ -53,14 +54,17 @@ def purchase_detail(request, oid):
 @role_required('member')
 def cancel_order(request, oid):
     execute_query("UPDATE `ORDER` SET OStatus = 'Cancelled' WHERE OID = %s AND OStatus != 'Shipped'", (oid,))
-    execute_query("UPDATE ORDERHISTORY SET OStatus = 'Cancelled' WHERE OID = %s AND OStatus != 'Shipped'", (oid,))
     # Restore stock
-    execute_query("""
-        UPDATE PRODUCT P
-        JOIN ORDER_DETAIL OD ON P.PID = OD.PID
-        SET P.Stock = P.Stock + OD.Quantity
-        WHERE OD.OID = %s
-    """, (oid,))
+    try:
+        execute_query("""
+            UPDATE PRODUCT P
+            JOIN ORDER_DETAIL OD ON P.PID = OD.PID
+            SET P.Stock = P.Stock + OD.Quantity
+            WHERE OD.OID = %s
+        """, (oid,))
+        messages.success(request, 'Order cancelled successfully.')
+    except Exception as e:
+        messages.error(request, f'Error cancelling order: {e}')
 
     return redirect(f'/hahalife/mypurchase/{oid}/')
 

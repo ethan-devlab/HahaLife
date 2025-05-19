@@ -6,11 +6,19 @@
 <div class="order-detail">
     <h2>Order Detail #{{ order.OID }}</h2>
 
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <div class="order-summary">
         <div class="order-info">
             <div class="info-group">
                 <label>Order Date:</label>
-                <span>{{ order.OrderDate }}</span>
+                <span>{{ order.CreatedAt }}</span>
             </div>
             <div class="info-group">
                 <label>Status:</label>

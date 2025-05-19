@@ -32,9 +32,12 @@ def review_applicant(request):
                         """, fetch=True)[0]['next_id']
             sid_new = f"S{next_id}"
 
-            execute_query("INSERT INTO SELLER (UID, UName, AccStatus, Password, Email, PhoneNumber, SName) VALUES (%s,%s,'Active',%s,%s,%s,%s)",
-                          (sid_new, appl['Name'], appl['password'], appl['Email'], appl['PhoneNumber'], appl['Name']))
-            messages.success(request, f"Applicant {appid} approved. Seller ID: {sid_new}, Password: {appl['password']}")
+            execute_query("INSERT INTO SELLER (UID, UName, AccStatus, Password, Email) VALUES (%s,%s,'Active',%s,%s)",
+                          (sid_new, appl['Name'], appl['Password'], appl['Email']))
+            if appl['PhoneNumber']:
+                execute_query("UPDATE SELLER SET PhoneNumber=%s WHERE UID=%s",
+                              (appl['PhoneNumber'], sid_new))
+            messages.success(request, f"Applicant {appid} approved. Seller ID: {sid_new}, Password: {appl['Password']}")
 
         else:
             messages.info(request, f"Applicant {appid} disapproved.")

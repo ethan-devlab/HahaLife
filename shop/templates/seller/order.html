@@ -5,86 +5,162 @@ Seller Orders - HahaLife Shopping
 {% endblock %}
 
 {% block content %}
-<div class="orders-container">
+<div class="orders-history">
   <h2>Your Orders</h2>
-  <div class="table-container">
-    <table class="orders-table">
-      <thead>
-        <tr>
-          <th>SOLD ID</th>
-          <th>Order ID</th>
-          <th>Date</th>
-          <th>Total</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for o in orders %}
-        <tr>
-          <td>{{ o.SHID }}</td>
-          <td>{{ o.OID }}</td>
-          <td>{{ o.SDate }}</td>
-          <td>NT${{ o.TotalPrice }}</td>
-          <td>
-            <a href="/hahalife/seller/order/{{ o.OID }}/" class="btn btn-view">View</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  {% if orders %}
+  <div class="order-list">
+    {% for o in orders %}
+    <div class="order-item">
+      <div class="order-header">
+        <span class="order-id">
+          Order #<a href="/hahalife/seller/order/{{ o.OID }}/">{{ o.OID }}</a>
+        </span>
+        <span class="order-date">{{ o.CreatedAt }}</span>
+      </div>
+      <div class="order-details">
+        <div class="order-info">
+          <span class="amount">NT${{ o.TotalAmount }}</span>
+          <span class="status {{ o.OStatus|lower }}">
+            {{ o.OStatus }}
+          </span>
+        </div>
+        <div class="order-action">
+          <a href="/hahalife/seller/order/{{ o.OID }}/" class="btn btn-view">View</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No orders available.</p>
+  </div>
+  {% endif %}
 </div>
 
 <style>
-  .orders-container {
-    max-width: 1200px;
+  .orders-history {
+    max-width: 800px;
     margin: 0 auto;
     padding: 20px;
   }
 
-  .table-container {
-    background: var(--light-lavender);
+  .orders-history h2 {
+    color: var(--text-color);
+    font-size: 2rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+
+  .order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .order-item {
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 1rem;
+    padding: 15px;
     box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
-    overflow-x: auto;
+    background: var(--light-lavender);
+    transition: transform 0.2s ease;
   }
 
-  .orders-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
+  .order-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(147, 112, 219, 0.3);
   }
 
-  .orders-table th,
-  .orders-table td {
-    padding: 12px;
-    text-align: left;
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
   }
 
-  .orders-table th {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    font-weight: 600;
+  .order-id a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: bold;
   }
 
-  .btn {
+  .order-id a:hover {
+    color: var(--text-color);
+  }
+
+  .order-date {
+    color: var(--text-color);
+    font-size: 0.9em;
+  }
+
+  .order-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .order-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .amount {
+    font-weight: bold;
+    color: var(--text-color);
+  }
+
+  .status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  .status.processing {
+    background: #FFF3E0;
+    color: #E65100;
+  }
+
+  .status.shipped {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+  }
+
+  .status.cancelled {
+    background: #FFEBEE;
+    color: #C62828;
+  }
+
+  .status.completed {
+    background: var(--primary-color);
+    color: var(--secondary-color);
+  }
+
+  .order-action .btn {
     padding: 6px 12px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.2s ease;
-  }
-
-  .btn-view {
     background: var(--secondary-color);
     color: white;
   }
 
-  .btn:hover {
+  .order-action .btn:hover {
     opacity: 0.9;
     transform: translateY(-2px);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-color);
+    background: var(--light-lavender);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
   }
 </style>
 {% endblock %}

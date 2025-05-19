@@ -42,10 +42,15 @@ def apply_view(request):
 
         try:
             execute_query(
-                "INSERT INTO APPLICANT (AppID, SID, Status, Name, Email, PhoneNumber, AppDate, Password) "
-                "VALUES (%s, NULL, 'Pending', %s, %s, %s, %s, %s)",
-                (appid, name, email, phone, app_date, password)
+                "INSERT INTO APPLICANT (AppID, SID, Status, Name, Email, AppDate, Password) "
+                "VALUES (%s, NULL, 'Pending', %s, %s, %s, %s)",
+                (appid, name, email, app_date, password)
             )
+            if phone:
+                execute_query(
+                    "UPDATE APPLICANT SET PhoneNumber=%s WHERE AppID=%s",
+                    (phone, appid)
+                )
             return redirect('apply_success')
         except Exception as e:
             messages.error(request, 'Submission failed: ' + str(e))

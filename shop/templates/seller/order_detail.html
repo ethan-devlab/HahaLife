@@ -1,12 +1,12 @@
 {% extends 'seller/base.html' %}
 
 {% block title %}
-Order Detail - {{ sale.OID }}
+Order Detail - {{ order.OID }}
 {% endblock %}
 
 {% block content %}
 <div class="order-detail">
-  <h2>Order Detail #{{ sale.OID }}</h2>
+  <h2>Order Detail #{{ order.OID }}</h2>
 
   {% if messages %}
   <ul class="messages">
@@ -20,20 +20,20 @@ Order Detail - {{ sale.OID }}
   <div class="summary-card">
     <div class="order-info">
       <div class="info-group">
-        <label>Sold ID:</label>
-        <span>{{ sale.SHID }}</span>
+        <label>Order ID:</label>
+        <span>{{ order.OID }}</span>
       </div>
       <div class="info-group">
-        <label>Order ID:</label>
-        <span>{{ sale.OID }}</span>
+        <label>Order Status:</label>
+        <span>{{ order.OStatus }}</span>
       </div>
       <div class="info-group">
         <label>Date:</label>
-        <span>{{ sale.SDate }}</span>
+        <span>{{ order.CreatedAt }}</span>
       </div>
       <div class="info-group">
         <label>Total Price:</label>
-        <span class="price">NT${{ sale.TotalPrice }}</span>
+        <span class="price">NT${{ order.TotalAmount }}</span>
       </div>
     </div>
   </div>
@@ -79,6 +79,10 @@ Order Detail - {{ sale.OID }}
       </div>
 
       <div class="form-row">
+        <div class="form-group">
+          <label>Shipping ID:</label>
+          <input type="text" name="shipping_id" value="{{ ship.ShipID }}" readonly>
+        </div>
         <div class="form-group">
           <label>Tracking Number:</label>
           <input type="text" name="track_number" value="{{ ship.TrackNumber }}" readonly>
@@ -130,7 +134,7 @@ Order Detail - {{ sale.OID }}
             </td>
             <td>NT${{ p.Subtotal }}</td>
             <td>
-              <form method="post" action="{% url 'submit_seller_review' sale.OID p.PID %}">
+              <form method="post" action="{% url 'submit_seller_review' order.OID p.PID %}">
                 {% csrf_token %}
                 <div class="review-form">
                   <label>Your Review</label>
