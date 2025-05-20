@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', auth.login_view, name='login'),
     path('applicant/login/', auth.applicant_view, name='applicant_login'),
     path('register/', auth.register_view, name='register'),
+    # path('register/success/', auth.register_success, name='register_success'), # for testing purpose
     path('logout/', auth.logout_view, name='logout'),
     path('guest/', auth.guest_view, name='guest'),
 

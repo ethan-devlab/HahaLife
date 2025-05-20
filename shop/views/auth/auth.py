@@ -17,7 +17,7 @@ USER_ROLES = {
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = str(request.POST.get('email')).lower()  # avoid case-sensitive issues
         password = request.POST.get('password')
 
         for role, table in USER_ROLES.items():
@@ -47,7 +47,7 @@ def register_view(request):
         uname = request.POST.get('uname')
         gender = request.POST.get('gender')
         birth = request.POST.get('birth')
-        email = request.POST.get('email')
+        email = str(request.POST.get('email')).lower()  # avoid case-sensitive issues
         phonenum = request.POST.get('phone')
         address = request.POST.get('address')
         password = request.POST.get('password')
@@ -79,11 +79,17 @@ def register_view(request):
 
         try:
             execute_query(
-                "INSERT INTO MEMBER (UID, UName, AccStatus, Password, Email, Address, Gender, BDate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
-                (mid, uname, 'Active', password, email, address, gender, birth)
+                "INSERT INTO MEMBER (UID, UName, AccStatus, Password, Email, Address, Gender) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (mid, uname, 'Active', password, email, address, gender)
             )
-            messages.success(request, "Registration successful. Please log in.")
-            return redirect('/hahalife/login/')
+
+            if birth and birth != "":
+                execute_query("UPDATE MEMBER SET BDate = %s WHERE UID = %s", (birth, mid))
+
+            # messages.success(request, "Registration successful. Please log in.")
+            return render(request, 'shared/register_success.html', {
+                'uname': uname,
+            })
         except Exception as e:
             messages.error(request, f"Error during registration: {str(e)}")
 
@@ -131,3 +137,8 @@ def applicant_view(request):
 def logout_view(request):
     request.session.flush()
     return redirect('/hahalife/login/')
+
+
+# testing purpose
+# def register_success(request):
+#     return render(request, 'shared/register_success.html')

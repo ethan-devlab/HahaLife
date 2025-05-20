@@ -57,7 +57,7 @@ def update_account(request):
     gender = request.POST.get('gender')
     birth = request.POST.get('birth')
     sname = request.POST.get('sname')
-    email = request.POST.get('email')
+    email = str(request.POST.get('email')).lower()  # avoid case-sensitive issues
     address = request.POST.get('address')
     phone = request.POST.get('phone')
     password = request.POST.get('password')
@@ -83,10 +83,10 @@ def update_account(request):
     sql = f"""
         UPDATE {table} SET UName = %s, Email = %s, Address = %s, PhoneNumber = %s
         """
-    if birth and birth != "":
+    if birth:
         sql += ", BDate = %s"
         params.append(birth)
-    elif birth and birth == "":
+    elif birth == "":
         sql += ", BDate = NULL"
 
     if gender:

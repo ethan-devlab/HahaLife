@@ -21,7 +21,9 @@ HahaLife Shopping Member Register
             <div class="form-group">
                 <label>Name*</label>
                 <input type="text" name="uname" required placeholder="Name" value="{{ request.POST.uname }}"
-                    pattern="[A-Za-z\s]{1, 15}" title="Must contain only letters and spaces" maxlength="15">
+                       pattern="[A-Za-z0-9\s]{1,15}"
+                       title="Must contain only letters, numbers and spaces"
+                       maxlength="15">
             </div>
             <div class="form-group">
                 <label>Gender</label>
@@ -40,7 +42,7 @@ HahaLife Shopping Member Register
             <div class="form-group">
                 <label>Email*</label>
                 <input type="email" name="email" required placeholder="Email" value="{{ request.POST.email }}"
-                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" maxlength="25">
+                    pattern="[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$" maxlength="25">
             </div>
             <div class="form-group">
                 <label>Phone Number</label>
@@ -53,7 +55,7 @@ HahaLife Shopping Member Register
                     maxlength="100">
             </div>
             <div class="form-group">
-                <label>Password</label>
+                <label>Password*</label>
                 <small>Must contain at least one number, one uppercase letter, one lowercase letter, one special
                     character, and at least 8 characters</small>
                 <input type="password" name="password" required placeholder="Password"
