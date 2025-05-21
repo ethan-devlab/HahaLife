@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS shopping;
 USE shopping;
 
 -- Create application user
-CREATE USER 'DBMS_A13'@'localhost' IDENTIFIED BY 'DBMS_A13';
+CREATE USER IF NOT EXISTS 'DBMS_A13'@'localhost' IDENTIFIED BY 'DBMS_A13';
 GRANT ALL PRIVILEGES ON shopping.* TO 'DBMS_A13'@'localhost';
 
 -- MEMBER table
