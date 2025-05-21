@@ -41,6 +41,16 @@
     background-color: white;
   }
 
+  .cart-table td a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: bold;  
+  }
+
+  .cart-table td a:active {
+    color: var(--text-color);
+  }
+
   .quantity-cell {
     display: flex;
     gap: 0.8rem;
@@ -140,6 +150,15 @@
 <div class="cart-container">
 
   <h2>My Shopping Cart</h2>
+  
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
   <form method="post" action="/hahalife/checkout/" class="cart-form">
     {% csrf_token %}
     <table class="cart-table">
@@ -156,10 +175,11 @@
       <tr>
         <td><input type="checkbox" name="selected_pids" value="{{ item.PID }}" checked></td>
         <td>{{ item.SName }}</td>
-        <td>{{ item.PName }}</td>
+        <td><a href="{% url 'product_detail' item.PID %}">{{ item.PName }}</a></td>
         <td class="price">NT${{ item.Price }}</td>
         <td class="quantity-cell">
-          <input type="number" id="quantity-{{ item.PID }}" value="{{ item.Quantity }}" min="1" class="quantity-input">
+          <input type="number" class="quantity-input" id="quantity-{{ item.PID }}" value="{{ item.Quantity }}" 
+          min="1" max="{{ item.Stock }}">
           <button type="button" onclick="updateQuantity('{{ item.PID }}')" class="update-btn">Update</button>
         </td>
         <td class="price">NT${{ item.Subtotal }}</td>

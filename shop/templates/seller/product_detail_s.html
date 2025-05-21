@@ -1,5 +1,5 @@
 {% extends 'seller/base.html' %}
-
+{% load static %}
 {% block title %}
 {{ product.PName }} - Seller Detail
 {% endblock %}
@@ -7,8 +7,14 @@
 {% block content %}
 <div class="product-container">
   <h2>Product Detail</h2>
-
+  <div class="primary-actions">
+    <a href="{% url 'edit_product' product.PID %}" class="btn btn-edit">Edit Product</a>
+  </div>
   <div class="product-card">
+    <div class="info-group image-group">
+      <img src="/hahalife/{{ product.ImagePath }}" alt="{{ product.PName }}"
+        class="product-image">
+    </div>
     <div class="info-group">
       <label>PID:</label><span>{{ product.PID }}</span>
     </div>
@@ -55,6 +61,33 @@
 </div>
 
 <style>
+  .primary-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    color: white;
+    transition: all 0.2s ease;
+    font-size: 1em;
+  }
+
+  .btn-edit {
+    background: var(--text-color);
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(147, 112, 219, 0.2);
+  }
+
   .product-container {
     max-width: 800px;
     margin: 0 auto;
@@ -71,6 +104,25 @@
 
   .info-group {
     margin-bottom: 1rem;
+  }
+
+  .image-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .product-image {
+    max-width: 100%;
+    max-height: 320px;
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: 0 2px 8px rgba(147, 112, 219, 0.08);
+    background: #fff;
+    display: block;
   }
 
   .info-group label {

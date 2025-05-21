@@ -17,21 +17,27 @@ Add Product - HahaLife Shopping
   {% endif %}
 
   <div class="form-card">
-    <form method="post" class="product-form">
+    <form method="post" enctype="multipart/form-data" class="product-form">
       {% csrf_token %}
+      
+      <div class="form-group">
+        <label>Product Image</label>
+        <input type="file" name="image">
+      </div>
+
       <div class="form-group">
         <label>Product Name *</label>
-        <input type="text" name="pname" required>
+        <input type="text" name="pname" required value="test">
       </div>
 
       <div class="form-group">
         <label>Category *</label>
-        <input type="text" name="category" required>
+        <input type="text" name="category" required value="test">
       </div>
 
       <div class="form-group">
         <label>Price (NT$) *</label>
-        <input type="number" name="price" required min="0" step="1">
+        <input type="number" name="price" required min="0" step="1" value="100">
       </div>
 
       <div class="form-group">
@@ -41,7 +47,7 @@ Add Product - HahaLife Shopping
 
       <div class="form-group">
         <label>Stock *</label>
-        <input type="number" name="stock" required min="0">
+        <input type="number" name="stock" required min="0" value="100">
       </div>
 
       <div class="form-group">
@@ -111,6 +117,20 @@ Add Product - HahaLife Shopping
     outline: none;
     border-color: var(--secondary-color);
     box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+  }
+
+  ::file-selector-button {
+    outline: none;
+    border: 0.5px solid var(--border-color);
+    box-shadow: 0 0 0 2px rgba(147, 112, 219, 0.2);
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+  }
+
+  ::file-selector-button:hover {
+    background-color: var(--third-color);
+    color: white;
   }
 
   .description-input {

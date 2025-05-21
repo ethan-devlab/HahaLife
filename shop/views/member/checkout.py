@@ -18,6 +18,11 @@ def checkout_view(request):
     cart_id = f'CART{uid[-5:]}'
     selected = request.POST.getlist('selected_pids')
 
+    print("selected: ", selected)
+    if not selected:
+        messages.info(request, "No item in cart is selected")
+        return redirect("view_cart")
+
     # Fetch selected items
     sql = f"""
         SELECT P.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal,
@@ -185,14 +190,17 @@ def place_order(request):
 
         # Deduct stock for this seller's products
         for item in seller_products:
-            execute_query(
-                """
-                UPDATE PRODUCT
-                SET Stock = Stock - %s
-                WHERE PID = %s
-                """,
-                (item['Quantity'], item['PID'])
-            )
+            try:
+                execute_query(
+                    """
+                    UPDATE PRODUCT
+                    SET Stock = Stock - %s
+                    WHERE PID = %s
+                    """,
+                    (item['Quantity'], item['PID'])
+                )
+            except Exception as e:
+                messages.error(e)
 
     # Clear cart for all processed items
     for pid in selected:

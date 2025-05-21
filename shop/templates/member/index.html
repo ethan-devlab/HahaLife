@@ -64,6 +64,9 @@
         <ul class="products-grid">
             {% for p in products %}
             <li class="product-card">
+                <div class="product-image-group">
+                    <img src="/hahalife/{{ p.ImagePath }}" alt="{{ p.PName }}" class="product-image">
+                </div>
                 <div class="brief-product">
                     <h3 class="product-name">{{ p.PName }}</h3>
                     <span class="sold-count">Sold: {{ p.SoldCount }}</span>
@@ -214,6 +217,29 @@
 
     .product-card:hover {
         transform: translateY(-5px);
+    }
+
+    .product-image-group {
+        width: 100%;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-color);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 8px;
+        min-height: 0;
+    }
+
+    .product-image {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        background: #fff;
     }
 
     .product-name {

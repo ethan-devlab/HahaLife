@@ -2,6 +2,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import HttpResponseForbidden
 from datetime import datetime
 import random
 import pytz
@@ -27,6 +28,15 @@ def generate_notification_id(oid, mid):
 
 @role_required('seller')
 def order_detail(request, oid):
+
+    sid = request.session['uid']
+    # Check if the order belongs to the seller
+    permission = execute_query(
+        "SELECT 1 FROM `ORDER` WHERE OID = %s AND SID = %s", (oid, sid), fetch=True
+    )
+    if not permission:
+        return HttpResponseForbidden("You do not have permission to view this order.")
+
     # Fetch order, payment, shipment info
     order = execute_query("SELECT * FROM `ORDER` WHERE OID = %s", (oid,), fetch=True)[0]
     payment = execute_query("SELECT * FROM PAID_BY WHERE OID = %s", (oid,), fetch=True)

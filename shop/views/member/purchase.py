@@ -2,6 +2,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import HttpResponseForbidden
 from ...utils import execute_query, role_required
 
 
@@ -23,6 +24,16 @@ def purchase_list(request):
 
 @role_required('member')
 def purchase_detail(request, oid):
+
+    uid = request.session.get('uid')
+
+    # only allow access to the order if the user is the one who made it
+    permisson = execute_query(
+        "SELECT 1 FROM `ORDER` WHERE OID = %s AND MID = %s", (oid, uid), fetch=True
+    )
+    if not permisson:
+        return HttpResponseForbidden("You do not have permission to view this order.")
+
     # Order-level info
     order_info = execute_query("""
         SELECT O.*, PB.PayMethod, PB.PayStatus, CR.Courier, CR.TrackNumber, CR.ShipStatus

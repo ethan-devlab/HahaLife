@@ -85,7 +85,8 @@
                                     <textarea name="buy_r" placeholder="Buyer review" class="review-input"
                                         maxlength="100" {% if order.OStatus != 'Completed' %}readonly{% endif %}
                                               title="This order is not completed.">{% if p.Buy_R %}{{ p.Buy_R }}{% else %}No review yet.{% endif %}</textarea>
-                                    <button type="submit" class="review-btn">Submit Review</button>
+                                    <button type="submit" class="review-btn" {% if order.OStatus != 'Completed' %}disabled{% endif %}>
+                                        Submit Review</button>
                                 </div>
                             </form>
                         </td>

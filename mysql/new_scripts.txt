@@ -80,6 +80,8 @@ CREATE TABLE PRODUCT (
     Descript VARCHAR(100)NOT NULL,
     Stock INT(4)         NOT NULL,
     SID CHAR(10),
+    ImagePath VARCHAR(256),
+    CHECK (Stock >= 0),
     FOREIGN KEY (SID) REFERENCES SELLER(UID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -238,16 +240,16 @@ INSERT INTO PROMOTION VALUES
 ('PC1001',100,NULL),('PC1002',200,NULL),('PC1003',50,NULL),('PC2001',150,NULL),('PC2002',100,NULL);
 
 INSERT INTO PRODUCT VALUES
-('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',50,'S000000001'),
-('P000000002','Books',    499.00,'AI Revolution',   'A masterpiece of Kenny Wang',     20,'S000000001'),
-('P000000003','Beauty',   899.50,'Face Serum',      'Make your face like a new face',   30,'S000000003'),
-('P000000004','Kitchen', 1399.00,'Blender 9000',    'A powerful blender since 1950',   10,'S000000003'),
-('P000000005','Clothing', 799.00,'Denim Jacket',    'Trendy denim jacket with unisex design',25,'S000000004'),
-('P000000006','Toys',     299.00,'RC Car',          'Remote control off-road buggy',   40,'S000000004'),
-('P000000007','Food',      99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',100,'S000000001'),
-('P000000008','Beauty',  1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',40,'S000000004'),
-('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',20,'S000000005'),
-('P000000010','Books',     450.00,'The Art of SQL',  'A practical guide to database performance tuning',50,'S000000004');
+('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',50,'S000000001',''),
+('P000000002','Books',    499.00,'AI Revolution',   'A masterpiece of Kenny Wang',     20,'S000000001',''),
+('P000000003','Beauty',   899.50,'Face Serum',      'Make your face like a new face',   30,'S000000003',''),
+('P000000004','Kitchen', 1399.00,'Blender 9000',    'A powerful blender since 1950',   10,'S000000003',''),
+('P000000005','Clothing', 799.00,'Denim Jacket',    'Trendy denim jacket with unisex design',25,'S000000004',''),
+('P000000006','Toys',     299.00,'RC Car',          'Remote control off-road buggy',   40,'S000000004',''),
+('P000000007','Food',      99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',100,'S000000001',''),
+('P000000008','Beauty',  1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',40,'S000000004',''),
+('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',20,'S000000005',''),
+('P000000010','Books',     450.00,'The Art of SQL',  'A practical guide to database performance tuning',50,'S000000004','');
 
 INSERT INTO HAS_PROMO VALUES
 ('PC1001','P000000001'),('PC1002','P000000005'),('PC1003','P000000010'),('PC2001','P000000009'),('PC2002','P000000003');

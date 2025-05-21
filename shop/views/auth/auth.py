@@ -11,7 +11,6 @@ USER_ROLES = {
     'member': 'MEMBER',
     'seller': 'SELLER',
     'admin': 'ADMIN',
-    'applicant': 'APPLICANT',
 }
 
 

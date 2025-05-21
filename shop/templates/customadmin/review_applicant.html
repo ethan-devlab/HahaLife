@@ -5,6 +5,7 @@ Review Applicants - HahaLife Shopping
 {% endblock %}
 
 {% block content %}
+<div class="review-container">
 <h2>Pending Seller Applications</h2>
   {% if messages %}
   <ul class="messages">
@@ -23,6 +24,7 @@ Review Applicants - HahaLife Shopping
       <th>Phone</th>
       <th>Status</th>
       <th>Application Date</th>
+      <th>Reviewer ID</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -35,6 +37,7 @@ Review Applicants - HahaLife Shopping
       <td>{{ a.PhoneNumber }}</td>
       <td>{{ a.Status }}</td>
       <td>{{ a.AppDate }}</td>
+      <td>{{ a.AID }}</td>
       <td>
         <form method="post">
           {% csrf_token %}
@@ -58,8 +61,10 @@ Review Applicants - HahaLife Shopping
   <p>No pending applications.</p>
 </div>
 {% endif %}
+</div>
 
 <style>
+
   .button-group {
     display: flex;
     gap: 0.5rem;

@@ -1,5 +1,7 @@
 # coding=utf-8
 
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 from .views.auth import auth
 from .views.member import product, cart, checkout, purchase, notification
@@ -12,7 +14,6 @@ urlpatterns = [
     path('login/', auth.login_view, name='login'),
     path('applicant/login/', auth.applicant_view, name='applicant_login'),
     path('register/', auth.register_view, name='register'),
-    # path('register/success/', auth.register_success, name='register_success'), # for testing purpose
     path('logout/', auth.logout_view, name='logout'),
     path('guest/', auth.guest_view, name='guest'),
 
@@ -31,7 +32,6 @@ urlpatterns = [
     path('cart/update/<str:pid>/', cart.update_quantity, name='update_quantity'),
     path('checkout/', checkout.checkout_view, name='checkout'),
     path('checkout/place/', checkout.place_order, name='place_order'),
-    # path('checkout/success/', checkout.checkout_success, name='order_success'),  # for testing purpose
     path('mypurchase/', purchase.purchase_list, name='mypurchase'),
     path('mypurchase/<str:oid>/', purchase.purchase_detail, name='purchase_detail'),
     path('mypurchase/<str:oid>/cancel/', purchase.cancel_order, name='cancel_order'),
@@ -57,3 +57,8 @@ urlpatterns = [
     path('new-seller/apply/success/', applicant.apply_success, name='apply_success'),
     path('new-seller/apply/status/', applicant.apply_status, name='apply_status'),
 ]
+
+if settings.DEBUG:
+    # path('register/success/', auth.register_success, name='register_success')
+    # path('checkout/success/', checkout.checkout_success, name='order_success'),
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

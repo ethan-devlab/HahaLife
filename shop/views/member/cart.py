@@ -20,7 +20,7 @@ def view_cart(request):
 
     # Fetch cart items
     sql = """
-        SELECT C.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal, S.SName
+        SELECT C.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal, S.SName, P.Stock
         FROM SHOPPINGCART C
         JOIN PRODUCT P ON C.PID = P.PID
         JOIN SELLER S ON P.SID = S.UID
