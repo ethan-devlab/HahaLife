@@ -174,3 +174,5 @@ cython_debug/
 .pypirc
 
 webstructure.pdf
+
+.DS_Store
