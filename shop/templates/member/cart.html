@@ -16,80 +16,97 @@
     border-collapse: separate;
     border-spacing: 0;
     margin-bottom: 2em;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
-    background: var(--light-lavender);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    background: white;
   }
 
   .cart-table th,
   .cart-table td {
-    padding: 1.2rem;
+    padding: 1.5rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
   }
 
   .cart-table th {
-    background-color: var(--primary-color);
+    background-color: var(--light-lavender);
     font-weight: 600;
     color: var(--text-color);
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  .cart-table tr:last-child td {
+    border-bottom: none;
   }
 
   .cart-table tr:hover {
-    background-color: white;
+    background-color: var(--light-lavender);
   }
 
   .cart-table td a {
-    color: var(--text-color);
+    color: var(--secondary-color);
     text-decoration: none;
-    font-weight: bold;  
+    font-weight: 500;
+    transition: color 0.2s;
   }
 
-  .cart-table td a:active {
-    color: var(--text-color);
+  .cart-table td a:hover {
+    color: var(--third-color);
   }
 
   .quantity-cell {
     display: flex;
-    gap: 0.8rem;
+    gap: 0.5rem;
     align-items: center;
   }
 
-  .quantity-input {
-    width: 70px;
-    padding: 0.6rem;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
-  }
-
-  .quantity-input:focus {
-    border-color: var(--secondary-color);
-    outline: none;
-  }
-
-  .update-btn,
-  .delete-btn,
-  .checkout-btn {
-    padding: 0.6rem 1.2rem;
+  .quantity-btn {
+    padding: 0.5rem 0.75rem;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 600;
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 500;
     transition: all 0.2s;
   }
 
-  .update-btn {
-    background-color: var(--secondary-color);
-    color: white;
+  .quantity-btn:hover:not(:disabled) {
+    background-color: var(--third-color);
+    transform: translateY(-1px);
+  }
+
+  .quantity-btn:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+  }
+
+  .quantity-display {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: white;
+    min-width: 3rem;
+    text-align: center;
+    font-weight: 500;
   }
 
   .delete-btn {
-    background-color: #ff5252;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    background-color: #ef4444;
     color: white;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .delete-btn:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
   }
 
   .cart-summary {
@@ -97,15 +114,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 2rem;
-    margin-top: 1rem;
-    background: var(--primary-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(147, 112, 219, 0.2);
+    margin-top: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   }
 
   .total-price {
-    font-size: 1.4rem;
-    font-weight: bold;
+    font-size: 1.5rem;
+    font-weight: 600;
     color: var(--text-color);
   }
 
@@ -113,37 +130,50 @@
     padding: 1rem 2.5rem;
     background-color: var(--secondary-color);
     color: white;
+    border: none;
+    border-radius: 8px;
     font-size: 1.1rem;
+    font-weight: 500;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(147, 112, 219, 0.2);
+    transition: all 0.2s;
   }
 
   .checkout-btn:hover {
-    background-color: var(--text-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(147, 112, 219, 0.3);
-  }
-
-  .update-btn:hover {
-    background-color: var(--text-color);
-    transform: translateY(-2px);
-  }
-
-  .delete-btn:hover {
-    background-color: #ff1744;
+    background-color: var(--third-color);
     transform: translateY(-2px);
   }
 
   input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 1.25rem;
+    height: 1.25rem;
     cursor: pointer;
     accent-color: var(--secondary-color);
+    border-radius: 4px;
   }
 
   .price {
     font-weight: 600;
     color: var(--text-color);
+  }
+
+  .messages {
+    margin-bottom: 2rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    .cart-table {
+      font-size: 0.9rem;
+    }
+    
+    .cart-table th,
+    .cart-table td {
+      padding: 1rem;
+    }
+
+    .checkout-btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
   }
 </style>
 
@@ -178,9 +208,9 @@
         <td><a href="{% url 'product_detail' item.PID %}">{{ item.PName }}</a></td>
         <td class="price">NT${{ item.Price }}</td>
         <td class="quantity-cell">
-          <input type="number" class="quantity-input" id="quantity-{{ item.PID }}" value="{{ item.Quantity }}" 
-          min="1" max="{{ item.Stock }}">
-          <button type="button" onclick="updateQuantity('{{ item.PID }}')" class="update-btn">Update</button>
+          <button type="button" class="quantity-btn" onclick="updateQty('{{ item.PID }}', -1)" {% if item.Quantity <= 1 %}disabled{% endif %}>−</button>
+          <span class="quantity-display" id="quantity-{{ item.PID }}">{{ item.Quantity }}</span>
+          <button type="button" class="quantity-btn" onclick="updateQty('{{ item.PID }}', 1)" {% if item.Quantity >= item.Stock %}disabled{% endif %}>+</button>
         </td>
         <td class="price">NT${{ item.Subtotal }}</td>
         <td><button type="button" onclick="window.location.href='/hahalife/cart/delete/{{ item.PID }}/'"
@@ -205,10 +235,18 @@
 </div>
 
 <script>
-  function updateQuantity(pid) {
-    var qty = document.getElementById('quantity-' + pid).value;
-    document.getElementById('hidden-quantity-' + pid).value = qty;
-    document.getElementById('update-form-' + pid).submit();
+  function updateQty(pid, change) {
+    const quantitySpan = document.getElementById('quantity-' + pid);
+    const currentQty = parseInt(quantitySpan.textContent);
+    
+    fetch('/hahalife/cart/update/' + pid + '/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: 'quantity=' + (currentQty + change)
+    }).then(response => response.ok && window.location.reload());
   }
 
   function selectAll(source) {
@@ -225,7 +263,7 @@
     var totalPrice = 0;
     {% for item in items %}
     var pid = "{{ item.PID }}";
-    var qty = parseInt(document.getElementById('quantity-{{ item.PID }}').value);
+    var qty = parseInt(document.getElementById('quantity-{{ item.PID }}').textContent);
     var price = parseFloat("{{ item.Price }}");
     var subtotal = qty * price;
     var checkbox = document.querySelector('input[name="selected_pids"][value="{{ item.PID }}"]');
@@ -243,9 +281,6 @@
     for (var i = 0; i < checkboxes.length; i++) {
       checkboxes[i].addEventListener('change', updateTotals);
     }
-    {% for item in items %}
-    document.getElementById('quantity-{{ item.PID }}').addEventListener('change', updateTotals);
-    {% endfor %}
     updateTotals();
   });
 </script>

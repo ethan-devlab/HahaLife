@@ -94,13 +94,12 @@ def delete_from_cart(request, pid):
 
 
 @role_required('member')
-@csrf_exempt
 def update_quantity(request, pid):
     print("Update quantity called")
     if request.method == 'POST':
         cart_id = get_cart_id(request.session['uid'])
         qty = int(request.POST.get('quantity'))
-
+        print(f"Cart ID: {cart_id}, PID: {pid}, Quantity: {qty}")
         if qty > 0:
             execute_query("UPDATE SHOPPINGCART SET Quantity = %s WHERE CartID = %s AND PID = %s",
                           (qty, cart_id, pid))

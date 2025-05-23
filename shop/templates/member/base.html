@@ -5,6 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="{% static 'shared/images/icon.png' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" />
   <link rel="stylesheet" href="{% static 'member/css/base.css' %}">
     {% block extrahead %}{% endblock %}
@@ -19,7 +20,8 @@
         <div class="logo">
           <h1>
             <a href="{% url 'product_list' %}">
-              HahaLife
+              <img src="{% static 'shared/images/icon.png' %}" width="50" height="50" alt="HahaLife Logo">
+              <span>HahaLife Shopping</span>
             </a>
           </h1>
         </div>
