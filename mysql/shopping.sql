@@ -166,7 +166,7 @@ CREATE TABLE `GUEST` (
 
 LOCK TABLES `GUEST` WRITE;
 /*!40000 ALTER TABLE `GUEST` DISABLE KEYS */;
-INSERT INTO `GUEST` VALUES ('G000000001',NULL,NULL,NULL,NULL,NULL,NULL),('G000000002',NULL,NULL,NULL,NULL,NULL,NULL),('G000000003',NULL,NULL,NULL,NULL,NULL,NULL),('G178242984','G20250520171758',NULL,NULL,NULL,NULL,NULL),('G334101093','Guest1747560716',NULL,NULL,NULL,NULL,NULL),('G363099210','G20250520171359',NULL,NULL,NULL,NULL,NULL),('G368399322','Guest1747560714',NULL,NULL,NULL,NULL,NULL),('G392556017','G20250520171744',NULL,NULL,NULL,NULL,NULL),('G671731389','G20250518173606',NULL,NULL,NULL,NULL,NULL),('G888554900','G20250520171845',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `GUEST` VALUES ('G000000001',NULL,NULL,NULL,NULL,NULL,NULL),('G000000002',NULL,NULL,NULL,NULL,NULL,NULL),('G000000003',NULL,NULL,NULL,NULL,NULL,NULL),('G178242984','G20250520171758',NULL,NULL,NULL,NULL,NULL),('G334101093','Guest1747560716',NULL,NULL,NULL,NULL,NULL),('G363099210','G20250520171359',NULL,NULL,NULL,NULL,NULL),('G368399322','Guest1747560714',NULL,NULL,NULL,NULL,NULL),('G392556017','G20250520171744',NULL,NULL,NULL,NULL,NULL),('G671731389','G20250518173606',NULL,NULL,NULL,NULL,NULL),('G888554900','G20250520171845',NULL,NULL,NULL,NULL,NULL),('G949722903','G20250521174329',NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `GUEST` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -414,7 +414,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES ('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',45,'S000000001','media/product_image/wireless_earbuds.jpg'),('P000000002','Books',499.00,'AI Revolution','A masterpiece of Kenny Wang',16,'S000000001',NULL),('P000000003','Beauty',899.50,'Face Serum','Make your face like a new face',5,'S000000003',NULL),('P000000004','Kitchen',1399.00,'Blender 9000','A powerful blender since 1950',9,'S000000003',NULL),('P000000005','Clothing',799.00,'Denim Jacket','Trendy denim jacket with unisex design',24,'S000000004',NULL),('P000000006','Toys',299.00,'RC Car','Remote control off-road buggy',39,'S000000004',NULL),('P000000007','Food',99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',99,'S000000001',NULL),('P000000008','Beauty',1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',39,'S000000004',NULL),('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',19,'S000000005',NULL),('P000000010','Books',450.00,'The Art of SQL','A practical guide to database performance tuning',49,'S000000004',NULL),('P000000011','test',100.00,'test','',99,'S000000001','media/product_image/Humaaans - Research.png');
+INSERT INTO `product` VALUES ('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',45,'S000000001','media/product_image/wireless_earbuds.jpg'),('P000000002','Books',499.00,'AI Revolution','A masterpiece of Kenny Wang',16,'S000000001','media/product_image/IMG_0303.jpeg'),('P000000003','Beauty',899.50,'Face Serum','Make your face like a new face',5,'S000000003','media/product_image/IMG_0305.jpeg'),('P000000004','Kitchen',1399.00,'Blender 9000','A powerful blender since 1950',9,'S000000003','media/product_image/IMG_0306.jpeg'),('P000000005','Clothing',799.00,'Denim Jacket','Trendy denim jacket with unisex design',24,'S000000004','media/product_image/IMG_0307.jpeg'),('P000000006','Toys',299.00,'RC Car','Remote control off-road buggy',39,'S000000004','media/product_image/IMG_0308.webp'),('P000000007','Food',99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',99,'S000000001','media/product_image/IMG_0304.jpeg'),('P000000008','Beauty',1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',39,'S000000004','media/product_image/IMG_0309.jpeg'),('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',19,'S000000005','media/product_image/WirelessKeyboard.jpg'),('P000000010','Books',450.00,'The Art of SQL','A practical guide to database performance tuning',49,'S000000004','media/product_image/IMG_0310.jpeg'),('P000000011','test',100.00,'test','',99,'S000000001','media/product_image/Humaaans - Research.png');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -630,4 +630,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-21 10:17:57
+-- Dump completed on 2025-05-23 13:35:24
