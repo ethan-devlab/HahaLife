@@ -18,7 +18,6 @@ urlpatterns = [
     path('member/register/', auth.member_register_view, name='member_register'),
     path('logout/', auth.logout_view, name='logout'),
     path('guest/', auth.guest_view, name='guest'),
-    path('member/login/', auth.guest_view, name='guest_login'),
 
     # path('member/', member.dashboard, name='member_dashboard'),
     path('seller/', seller.dashboard, name='seller_dashboard'),

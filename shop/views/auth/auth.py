@@ -165,6 +165,9 @@ def applicant_login_view(request):
 def logout_view(request):
     role = request.session.get('role')
     request.session.flush()
+    if role == "guest":
+        role = "member"
+
     return redirect(f'/hahalife/{role}/login/')
 
 
