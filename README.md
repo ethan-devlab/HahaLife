@@ -18,6 +18,15 @@ brew install mysql-client
 ```
 mysql -u root < <path-to-file>/new_scripts.txt
 ```
+3. Or download [shopping.sql](https://github.com/ethan-devlab/HahaLife/blob/07fe538e59e2946a16e4fc5513e7b9268fcfb6f1/mysql/shopping.sql), and run
+```
+mysql -u root
+```
+```
+mysql> CREATE DATABASE IF NOT EXISTS shopping;
+mysql> USE shopping;
+mysql> SOURCE <path-to-file>/shopping.sql
+```
 see [Executing SQL Statements from a Text File](https://dev.mysql.com/doc/refman/8.4/en/mysql-batch-commands.html) for more details.
 
 ## Set up Python environment
