@@ -1,14 +1,14 @@
 {% extends 'shared/base.html' %}
 {% load static %}
 
-{% block title %}HahaLife Shopping Seller Apply{% endblock %}
+{% block title %}HahaLife Shopping Member Register{% endblock %}
 
 {% block content %}
 <section class="signup">
     <div class="container">
         <div class="signup-content">
             <div class="signup-form">
-                <h2 class="form-title">Seller Application</h2>
+                <h2 class="form-title">Member Sign up</h2>
                 {% if messages %}
                 <ul class="messages">
                     {% for message in messages %}
@@ -19,21 +19,42 @@
                 <form method="POST" class="register-form" id="register-form">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                        <input type="text" name="name" id="name" required placeholder="Your Name"
-                            pattern="[A-Za-z\s]{1,15}" title="Must contain only letters and spaces" maxlength="15"
-                            value="{{ request.POST.name }}" />
+                        <label for="uname"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                        <input type="text" name="uname" id="uname" required placeholder="Your Name"
+                            pattern="[A-Za-z0-9\s]{1,15}" title="Must contain only letters, numbers and spaces"
+                            maxlength="15" value="{{ request.POST.uname }}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="gender"><i class="zmdi zmdi-male-female"></i></label>
+                        <select name="gender" id="gender">
+                            <option value="">-- Select Gender --</option>
+                            <option value="Female" {% if request.POST.gender == "Female" %}selected{% endif %}>Female
+                            </option>
+                            <option value="Male" {% if request.POST.gender == "Male" %}selected{% endif %}>Male</option>
+                            <option value="Other" {% if request.POST.gender == "Other" %}selected{% endif %}>Other
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="birth"><i class="zmdi zmdi-calendar"></i></label>
+                        <input type="date" id="birth" name="birth" value="{{ request.POST.birth }}" min="1900-01-01"
+                            max="2023-12-31" />
                     </div>
                     <div class="form-group">
                         <label for="email"><i class="zmdi zmdi-email"></i></label>
                         <input type="email" name="email" id="email" required placeholder="Your Email"
-                            pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" maxlength="25"
+                            pattern="[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$" maxlength="25"
                             value="{{ request.POST.email }}" />
                     </div>
                     <div class="form-group">
                         <label for="phone"><i class="zmdi zmdi-phone"></i></label>
                         <input type="text" name="phone" id="phone" placeholder="Phone Number" pattern="[0-9]{10}"
                             title="Must be 10 digits long" value="{{ request.POST.phone }}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="address"><i class="zmdi zmdi-pin"></i></label>
+                        <input type="text" name="address" id="address" placeholder="Address" maxlength="100"
+                            value="{{ request.POST.address }}" />
                     </div>
                     <div class="form-group">
                         <label for="password"><i class="zmdi zmdi-lock"></i></label>
@@ -54,15 +75,30 @@
                             statements in <a href="#" class="term-service">Terms of service</a></span>
                     </div>
                     <div class="form-group form-button">
-                        <input type="submit" name="signup" id="signup" class="form-submit" value="Submit Application" />
+                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register" />
                     </div>
                 </form>
             </div>
             <div class="signup-image">
                 <figure><img src="{% static 'shared/images/signup-image.jpg' %}" alt="sign up image"></figure>
-                <a href="{% url 'applicant_login' %}" class="signup-image-link">Check application status</a>
+                <a href="{% url 'member_login' %}" class="signup-image-link">I am already member</a>
             </div>
         </div>
     </div>
 </section>
+
+
+<script>
+    var birth = document.getElementById("birth");
+    if (birth) {
+        const today = new Date();
+        const year = today.getFullYear() - 13;
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const maxDate = `${year}-${month}-${day}`;
+        birth.setAttribute("max", maxDate);
+        birth.setAttribute("title", "Must before " + maxDate);
+    }
+
+</script>
 {% endblock %}

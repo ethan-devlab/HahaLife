@@ -1,26 +1,30 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'shared/css/base.css' %}">
-    <title>{% block title %}{% endblock %}</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="{% static 'shared/fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+    <!-- Main css -->
+    <link rel="stylesheet" href="{% static 'shared/css/style.css' %}">
+    {% block extrahead %}{% endblock %}
+    <title>{% block title %}HahaLife Shopping{% endblock %}</title>
 </head>
+
 <body>
-<div id="content">
-    <h1>
-    HahaLife Shopping
-    </h1>
-  {% block content %}
-  {% endblock %}
-</div>
-
-<footer class="main-footer">
-    <div class="footer-content">
-        <p>&copy; 2025 HahaLife Shopping. All Rights Reserved</p>
+    <div class="main">
+        {% block content %}
+        {% endblock %}
     </div>
-</footer>
 
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 HahaLife Shopping. All Rights Reserved</p>
+        </div>
+    </footer>
 </body>
+
 </html>

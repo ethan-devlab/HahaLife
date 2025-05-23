@@ -18,7 +18,6 @@ def checkout_view(request):
     cart_id = f'CART{uid[-5:]}'
     selected = request.POST.getlist('selected_pids')
 
-    print("selected: ", selected)
     if not selected:
         messages.info(request, "No item in cart is selected")
         return redirect("view_cart")
@@ -200,7 +199,7 @@ def place_order(request):
                     (item['Quantity'], item['PID'])
                 )
             except Exception as e:
-                messages.error(e)
+                messages.error(request, e)
 
     # Clear cart for all processed items
     for pid in selected:

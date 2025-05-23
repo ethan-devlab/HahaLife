@@ -11,11 +11,14 @@ from .views.applicant import applicant
 from .views.shared import account
 
 urlpatterns = [
-    path('login/', auth.login_view, name='login'),
-    path('applicant/login/', auth.applicant_view, name='applicant_login'),
-    path('register/', auth.register_view, name='register'),
+    path('member/login/', auth.member_login_view, name='member_login'),
+    path('seller/login/', auth.seller_login_view, name='seller_login'),
+    path('admin/login/', auth.admin_login_view, name='admin_login'),
+    path('applicant/login/', auth.applicant_login_view, name='applicant_login'),
+    path('member/register/', auth.member_register_view, name='member_register'),
     path('logout/', auth.logout_view, name='logout'),
     path('guest/', auth.guest_view, name='guest'),
+    path('member/login/', auth.guest_view, name='guest_login'),
 
     # path('member/', member.dashboard, name='member_dashboard'),
     path('seller/', seller.dashboard, name='seller_dashboard'),
@@ -59,6 +62,8 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    # path('register/success/', auth.register_success, name='register_success')
-    # path('checkout/success/', checkout.checkout_success, name='order_success'),
+    urlpatterns += [
+        path('member/register/success/', auth.register_success, name='register_success'),
+        # path('checkout/success/', checkout.checkout_success, name='order_success'),
+    ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

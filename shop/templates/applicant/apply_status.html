@@ -1,111 +1,59 @@
 {% extends 'shared/base.html' %}
+{% load static %}
 
-{% block title %}
-Application Status - HahaLife Shopping
-{% endblock %}
+{% block title %}Application Status - HahaLife Shopping{% endblock %}
 
 {% block content %}
-<div class="applicant-container">
-    <h2 class="page-title">Application Status</h2>
+<section class="sign-in">
+    <div class="container">
+        <div class="signin-content" style="justify-content: center;">
+            <div class="signin-form">
+                <h2 class="form-title">Application Status</h2>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                </ul>
+                {% endif %}
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <div class="form-card">
-        <div class="form-group">
-            <label>Applicant ID: <span class="field-value">{{ applicant.AppID }}</span></label>
-        </div>
-        <div class="form-group">
-            <label>Name: <span class="field-value">{{ applicant.Name }}</span></label>
-        </div>
-        <div class="form-group">
-            <label>Application Status: <span class="field-value">{{ applicant.Status }}</span></label>
-        </div>
-        <div class="form-group">
-            <label>Email: <span class="field-value">{{ applicant.Email }}</span></label>
-        </div>
-        <div class="form-group">
-            <label>Phone Number: <span class="field-value">{{ applicant.PhoneNumber }}</span></label>
-        </div>
-        <div class="form-group">
-            <label>Application Date: <span class="field-value">{{ applicant.AppDate }}</span></label>
-        </div>
-        <div class="form-group">
-            <label>Review Comment: </label>
-            <span class="field-value">{{ applicant.RevComment }}</span>
-        </div>
-        <form method="post" action="{% url 'logout' %}" class="logout-form">
-            {% csrf_token %}
-            <button type="submit" class="submit-btn">Logout</button>
-        </form>
+                <div class="status-details">
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-account"></i> Applicant ID</label>
+                        <p class="status-value">{{ applicant.AppID }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-account"></i> Name</label>
+                        <p class="status-value">{{ applicant.Name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-check-circle"></i> Status</label>
+                        <p class="status-value status-{{ applicant.Status|lower }}">{{ applicant.Status }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-email"></i> Email</label>
+                        <p class="status-value">{{ applicant.Email }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-phone"></i> Phone Number</label>
+                        <p class="status-value">{{ applicant.PhoneNumber }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-calendar"></i> Application Date</label>
+                        <p class="status-value">{{ applicant.AppDate }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="zmdi zmdi-comment-text"></i> Review Comment</label>
+                        <p class="status-value">{{ applicant.RevComment|default:"No comments yet" }}</p>
+                    </div>
+
+                    <form method="post" action="{% url 'logout' %}" class="form-group form-button">
+                        {% csrf_token %}
+                        <input type="submit" class="form-submit" value="Logout">
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-
-   <style>
-.applicant-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-.page-title {
-    color: var(--text-color);
-    margin-bottom: 2rem;
-    text-align: center;
-    font-size: 2rem;
-}
-
-.form-card {
-    background-color: var(--light-lavender);
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 4px rgba(147, 112, 219, 0.1);
-}
-
-.logout-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-.field-value {
-    padding: 0.5rem 0;
-    color: var(--text-color);
-    font-weight: 500;
-}
-
-.submit-btn {
-    background-color: var(--secondary-color);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 1rem;
-}
-
-.submit-btn:hover {
-    background-color: var(--text-color);
-}
-</style>
-
+</section>
 {% endblock %}

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/*
 :root {
     --primary-color: #E6E6FA;
     --secondary-color: #9370DB;
@@ -8,6 +9,16 @@
     --light-lavender: #F0F0FF;
     --border-color: #D8D8FF;
 }
+*/
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #2563eb;
+    --third-color: #1e40af;
+    --text-color: #1f2937;
+    --light-lavender: #f1f5f9;
+    --border-color: #e2e8f0;
+}
+
 
 * {
     margin: 0;

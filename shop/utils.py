@@ -42,14 +42,14 @@ def role_required(*roles):
             user_role = request.session.get('role')
             table = USER_ROLES.get(user_role)
             if user_role not in roles or not uid:
-                return redirect('login')
+                return redirect('member_login')
             if user_role != 'applicant':
-                sql = f"SELECT * FROM {table} WHERE UID=%s"
+                sql = f"SELECT 1 FROM {table} WHERE UID=%s"
                 if user_role != 'guest':
                     sql += " AND AccStatus='Active'"
                 result = execute_query(sql, (uid,), fetch=True)
                 if not result:
-                    return redirect('login')
+                    return redirect(f'{user_role}_login')
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator

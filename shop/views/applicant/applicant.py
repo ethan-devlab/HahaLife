@@ -74,6 +74,8 @@ def apply_status(request):
         messages.error(request, 'No application found.')
         return redirect('/hahalife/')
 
+    print(applicant)
+
     applicant[0]['RevComment'] = applicant[0]['RevComment'] or ""
 
     return render(request, 'applicant/apply_status.html', {'applicant': applicant[0]})

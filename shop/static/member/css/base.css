@@ -1,13 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-:root {
+/* :root {
     --primary-color: #E6E6FA;
     --secondary-color: #9370DB;
     --third-color: #7B68EE;
     --text-color: #483D8B;
     --light-lavender: #F0F0FF;
     --border-color: #D8D8FF;
+} */
+
+:root {
+    --primary-color: #ffffff;
+    --secondary-color: #2563eb;
+    --third-color: #1e40af;
+    --text-color: #1f2937;
+    --light-lavender: #f1f5f9;
+    --border-color: #e2e8f0;
 }
+
 
 * {
     margin: 0;
@@ -16,7 +27,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
     min-height: 100vh;
@@ -87,17 +98,17 @@ body {
 }
 
 h2 {
-  color: var(--text-color);
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  text-align: left;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 0.5rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
 }
 
 h3 {
-  color: var(--text-color);
-  margin: 1.5rem 0 1rem;
+    color: var(--text-color);
+    margin: 1.5rem 0 1rem;
 }
 
 .form-card {
@@ -143,7 +154,7 @@ h3 {
     list-style: none;
     padding: 0;
     margin-bottom: 2rem;
- }
+}
 
 .messages li {
     padding: 1rem;

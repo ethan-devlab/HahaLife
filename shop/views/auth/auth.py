@@ -7,41 +7,70 @@ import random
 import pytz
 from datetime import datetime
 
-USER_ROLES = {
-    'member': 'MEMBER',
-    'seller': 'SELLER',
-    'admin': 'ADMIN',
-}
+LOGIN_SQL = "SELECT * FROM {table} WHERE Email=%s AND Password=%s AND AccStatus='Active'"
+LOGIN_ERROR_MESSAGE = "Invalid credentials or inactive account"
 
 
-def login_view(request):
+def member_login_view(request):
     if request.method == 'POST':
         email = str(request.POST.get('email')).lower()  # avoid case-sensitive issues
         password = request.POST.get('password')
 
-        for role, table in USER_ROLES.items():
-            sql = f"SELECT * FROM {table} WHERE Email=%s AND Password=%s AND AccStatus='Active'"
-            result = execute_query(sql, (email, password), fetch=True)
-            if result:
-                user = result[0]
-                request.session['uid'] = user['UID']
-                request.session['role'] = role
-                request.session['uname'] = user['UName']
-                request.session.set_expiry(60 * 60 * 24)  # 1 day
+        result = execute_query(LOGIN_SQL.format(table="MEMBER"), (email, password), fetch=True)
+        if result:
+            user = result[0]
+            request.session['uid'] = user['UID']
+            request.session['role'] = 'member'
+            request.session['uname'] = user['UName']
+            request.session.set_expiry(60 * 60 * 24)  # 1 day
 
-                if role == 'admin':
-                    sql = "UPDATE ADMIN SET L_Login = NOW() WHERE UID = %s"
-                    execute_query(sql, (user['UID'],))
-                    return redirect("admin_dashboard")
-                elif role == 'seller':
-                    return redirect("seller_dashboard")
-                return redirect(f'/hahalife/')
+            return redirect(f'/hahalife/')
 
-        messages.error(request, 'Invalid credentials or inactive account')
-    return render(request, 'shared/login.html')
+        messages.error(request, LOGIN_ERROR_MESSAGE)
+    return render(request, 'shared/member_login.html')
 
 
-def register_view(request):
+def seller_login_view(request):
+    if request.method == 'POST':
+        email = str(request.POST.get('email')).lower()  # avoid case-sensitive issues
+        password = request.POST.get('password')
+
+        result = execute_query(LOGIN_SQL.format(table="SELLER"), (email, password), fetch=True)
+        if result:
+            user = result[0]
+            request.session['uid'] = user['UID']
+            request.session['role'] = 'seller'
+            request.session['uname'] = user['UName']
+            request.session.set_expiry(60 * 60 * 24)  # 1 day
+            
+            return redirect("seller_dashboard")
+
+        messages.error(request, LOGIN_ERROR_MESSAGE)
+    return render(request, 'shared/seller_login.html')
+
+
+def admin_login_view(request):
+    if request.method == 'POST':
+        email = str(request.POST.get('email')).lower()  # avoid case-sensitive issues
+        password = request.POST.get('password')
+
+        result = execute_query(LOGIN_SQL.format(table="ADMIN"), (email, password), fetch=True)
+        if result:
+            user = result[0]
+            request.session['uid'] = user['UID']
+            request.session['role'] = 'admin'
+            request.session['uname'] = user['UName']
+            request.session.set_expiry(60 * 60 * 24)  # 1 day
+
+            return redirect("admin_dashboard")
+
+        messages.error(request, LOGIN_ERROR_MESSAGE)
+    return render(request, 'shared/admin_login.html')
+
+
+def member_register_view(request):
+    err_response = render(request, 'shared/member_register.html')
+
     if request.method == 'POST':
         uname = request.POST.get('uname')
         gender = request.POST.get('gender')
@@ -56,7 +85,7 @@ def register_view(request):
 
         if password != confirm_password:
             messages.error(request, "Passwords do not match.")
-            return render(request, 'shared/register.html')
+            return err_response
 
         existing_user = execute_query(
             "SELECT * FROM MEMBER WHERE Email=%s",
@@ -65,7 +94,7 @@ def register_view(request):
         )
         if existing_user:
             messages.error(request, f"Email '{email}' already exists.")
-            return render(request, 'shared/register.html')
+            return err_response
 
         existing_phone = execute_query(
             "SELECT * FROM MEMBER WHERE PhoneNumber=%s",
@@ -74,7 +103,7 @@ def register_view(request):
         )
         if existing_phone:
             messages.error(request, f"Phone number '{phonenum}' already exists.")
-            return render(request, 'shared/register.html')
+            return err_response
 
         try:
             execute_query(
@@ -92,7 +121,7 @@ def register_view(request):
         except Exception as e:
             messages.error(request, f"Error during registration: {str(e)}")
 
-    return render(request, 'shared/register.html')
+    return render(request, 'shared/member_register.html')
 
 
 def guest_view(request):
@@ -113,7 +142,7 @@ def guest_view(request):
     return redirect(f'/hahalife/')
 
 
-def applicant_view(request):
+def applicant_login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -134,10 +163,11 @@ def applicant_view(request):
 
 
 def logout_view(request):
+    role = request.session.get('role')
     request.session.flush()
-    return redirect('/hahalife/login/')
+    return redirect(f'/hahalife/{role}/login/')
 
 
 # testing purpose
-# def register_success(request):
-#     return render(request, 'shared/register_success.html')
+def register_success(request):
+    return render(request, 'shared/register_success.html')

@@ -49,7 +49,7 @@ Order Detail - {{ order.OID }}
           <select name="ostatus" class="status-select">
             <option {% if order.OStatus == 'Processing' %}selected{% endif %}>Processing</option>
             <option {% if order.OStatus == 'Shipped' %}selected{% endif %}>Shipped</option>
-            <option {% if order.OStatus == 'Delivered' %}selected{% endif %}>Delivered</option>
+            <option {% if order.OStatus == 'Completed' %}selected{% endif %}>Completed</option>
             <option {% if order.OStatus == 'Cancelled' %}selected{% endif %}>Cancelled</option>
           </select>
         </div>
@@ -138,12 +138,13 @@ Order Detail - {{ order.OID }}
                 {% csrf_token %}
                 <div class="review-form">
                   <label>Your Review</label>
-                  <textarea name="sell_r" class="review-input"
-                    maxlength="100">{% if p.Sell_R %}{{ p.Sell_R }}{% else %}No review yet.{% endif %}</textarea>
+                  <textarea name="sell_r" class="review-input" maxlength="100"
+                  {% if order.OStatus != 'Completed' %}readonly title="This order is not completed."{% endif %}>{% if p.Sell_R %}{{ p.Sell_R }}{% else %}No review yet.{% endif %}</textarea>
                   <label>Buyer's Review</label>
                   <textarea readonly
                     class="review-input">{% if p.Buy_R %}{{ p.Buy_R }}{% else %}No review yet.{% endif %}</textarea>
-                  <button type="submit" class="review-btn">Submit Review</button>
+                  <button type="submit" class="review-btn" {% if order.OStatus != 'Completed' %}disabled{% endif %}
+                  >Submit Review</button>
                 </div>
               </form>
             </td>
