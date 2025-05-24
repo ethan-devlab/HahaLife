@@ -18,7 +18,7 @@ brew install mysql-client
 ```
 mysql -u root < <path-to-file>/new_scripts.txt
 ```
-3. Or download [shopping.sql](https://github.com/ethan-devlab/HahaLife/blob/07fe538e59e2946a16e4fc5513e7b9268fcfb6f1/mysql/shopping.sql), and run
+3. Or download [shopping.sql](https://github.com/ethan-devlab/HahaLife/blob/main/mysql/shopping.sql), and run
 ```
 mysql -u root
 ```
