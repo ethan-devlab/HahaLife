@@ -64,7 +64,7 @@ python3 manage.py runserver
 The default url will be `127.0.0.1:8000/`
 
 
-### For Unix/macOS
+### For Linux/macOS
 ```
 python3 -m venv django_project
 ```
