@@ -62,6 +62,8 @@ def admin_login_view(request):
             request.session['uname'] = user['UName']
             request.session.set_expiry(60 * 60 * 24)  # 1 day
 
+            execute_query("UPDATE ADMIN SET L_Login = NOW() WHERE UID = %s", (user['UID'],))
+
             return redirect("admin_dashboard")
 
         messages.error(request, LOGIN_ERROR_MESSAGE)

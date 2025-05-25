@@ -2,8 +2,9 @@
 
 from django.shortcuts import render, redirect
 from ...utils import execute_query, role_required
-from django.utils import timezone
 from django.contrib import messages
+from datetime import datetime
+import pytz
 
 
 def apply_view(request):
@@ -13,7 +14,8 @@ def apply_view(request):
         phone = request.POST.get('phone')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        app_date = timezone.now().date().strftime('%Y-%m-%d')
+        TPE = pytz.timezone("Asia/Taipei")
+        app_date = datetime.now(TPE).strftime('%Y-%m-%d')
 
         next_id = execute_query(
             "SELECT LPAD(COUNT(*)+1, 7, '0') AS next_appid FROM APPLICANT", fetch=True
