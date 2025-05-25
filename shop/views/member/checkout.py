@@ -24,12 +24,12 @@ def checkout_view(request):
 
     # Fetch selected items
     sql = f"""
-        SELECT P.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal,
+        SELECT P.PID, P.PName, P.Price, A.Quantity, (P.Price * A.Quantity) AS Subtotal,
                S.SName, P.SID
-        FROM SHOPPINGCART C
-        JOIN PRODUCT P ON C.PID = P.PID
+        FROM ADDED_TO A
+        JOIN PRODUCT P ON A.PID = P.PID
         JOIN SELLER S ON P.SID = S.UID
-        WHERE C.CartID = %s AND C.PID IN ({','.join(['%s'] * len(selected))})
+        WHERE A.CartID = %s AND A.PID IN ({','.join(['%s'] * len(selected))})
     """
     items = execute_query(sql, [cart_id] + selected, fetch=True)
     total = sum(item['Subtotal'] for item in items)
@@ -79,10 +79,10 @@ def place_order(request):
     # Fetch all items and group by seller
     items = execute_query(
         f"""
-        SELECT C.PID, C.Quantity, P.Price, P.SID
-        FROM SHOPPINGCART C
-        JOIN PRODUCT P ON C.PID = P.PID
-        WHERE C.CartID = %s AND C.PID IN ({','.join(['%s'] * len(selected))})
+        SELECT A.PID, A.Quantity, P.Price, P.SID
+        FROM ADDED_TO A
+        JOIN PRODUCT P ON A.PID = P.PID
+        WHERE A.CartID = %s AND A.PID IN ({','.join(['%s'] * len(selected))})
         """,
         [cart_id] + selected,
         fetch=True
@@ -204,7 +204,6 @@ def place_order(request):
     # Clear cart for all processed items
     for pid in selected:
         execute_query("DELETE FROM ADDED_TO WHERE CartID = %s AND PID = %s", (cart_id, pid))
-        execute_query("DELETE FROM SHOPPINGCART WHERE CartID = %s AND PID = %s", (cart_id, pid))
 
     return render(request, 'member/checkout_success.html')
 

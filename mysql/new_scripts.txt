@@ -148,20 +148,19 @@ CREATE TABLE ORDER_DETAIL (
 
 -- SHOPPINGCART table
 CREATE TABLE SHOPPINGCART (
-    CartID CHAR(10)      NOT NULL,
-    PID CHAR(10)         NOT NULL,
-    Quantity INT(3)      NOT NULL,
-    PRIMARY KEY (CartID, PID),
-    FOREIGN KEY (PID) REFERENCES PRODUCT(PID)
+    CartID CHAR(10) NOT NULL PRIMARY KEY,
+    UID CHAR(10) NOT NULL UNIQUE,
+    FOREIGN KEY (UID) REFERENCES MEMBER(UID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- ADDED_TO table
 CREATE TABLE ADDED_TO (
-    CartID CHAR(10)      NOT NULL,
-    PID CHAR(10)         NOT NULL,
+    CartID CHAR(10) NOT NULL,
+    PID CHAR(10)    NOT NULL,
+    Quantity INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY (CartID, PID),
-    FOREIGN KEY (CartID, PID) REFERENCES SHOPPINGCART(CartID, PID) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (PID) REFERENCES PRODUCT(PID)  ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (CartID) REFERENCES SHOPPINGCART(CartID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (PID) REFERENCES PRODUCT(PID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- REVIEW table
@@ -240,16 +239,16 @@ INSERT INTO PROMOTION VALUES
 ('PC1001',100,NULL),('PC1002',200,NULL),('PC1003',50,NULL),('PC2001',150,NULL),('PC2002',100,NULL);
 
 INSERT INTO PRODUCT VALUES
-('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',50,'S000000001',''),
-('P000000002','Books',    499.00,'AI Revolution',   'A masterpiece of Kenny Wang',     20,'S000000001',''),
-('P000000003','Beauty',   899.50,'Face Serum',      'Make your face like a new face',   30,'S000000003',''),
-('P000000004','Kitchen', 1399.00,'Blender 9000',    'A powerful blender since 1950',   10,'S000000003',''),
-('P000000005','Clothing', 799.00,'Denim Jacket',    'Trendy denim jacket with unisex design',25,'S000000004',''),
-('P000000006','Toys',     299.00,'RC Car',          'Remote control off-road buggy',   40,'S000000004',''),
-('P000000007','Food',      99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',100,'S000000001',''),
-('P000000008','Beauty',  1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',40,'S000000004',''),
-('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',20,'S000000005',''),
-('P000000010','Books',     450.00,'The Art of SQL',  'A practical guide to database performance tuning',50,'S000000004','');
+('P000000001','Electronics',1999.99,'Wireless Earbuds','A wireless earbuds from popular brand.',50,'S000000001','media/product_image/wireless_earbuds.jpg'),
+('P000000002','Books',    499.00,'AI Revolution',   'A masterpiece of Kenny Wang',     20,'S000000001','media/product_image/IMG_0303.jpeg'),
+('P000000003','Beauty',   899.50,'Face Serum',      'Make your face like a new face',   30,'S000000003','media/product_image/IMG_0305.jpeg'),
+('P000000004','Kitchen', 1399.00,'Blender 9000',    'A powerful blender since 1950',   10,'S000000003','media/product_image/IMG_0306.jpeg'),
+('P000000005','Clothing', 799.00,'Denim Jacket',    'Trendy denim jacket with unisex design',25,'S000000004','media/product_image/IMG_0307.jpeg'),
+('P000000006','Toys',     299.00,'RC Car',          'Remote control off-road buggy',   40,'S000000004','media/product_image/IMG_0308.webp'),
+('P000000007','Food',      99.00,'Instant Noodles 5-pack','Classic Taiwanese flavor',100,'S000000001','media/product_image/IMG_0304.jpeg'),
+('P000000008','Beauty',  1299.00,'Aloe Soothing Gel','Soothes and hydrates skin, 300ml',40,'S000000004','media/product_image/IMG_0309.jpeg'),
+('P000000009','Electronics',5990.00,'Wireless Keyboard','Mechanical keyboard with RGB lighting',20,'S000000005','media/product_image/WirelessKeyboard.jpg'),
+('P000000010','Books',     450.00,'The Art of SQL',  'A practical guide to database performance tuning',50,'S000000004','media/product_image/IMG_0310.jpeg');
 
 INSERT INTO HAS_PROMO VALUES
 ('PC1001','P000000001'),('PC1002','P000000005'),('PC1003','P000000010'),('PC2001','P000000009'),('PC2002','P000000003');
@@ -286,16 +285,19 @@ INSERT INTO ORDER_DETAIL VALUES
 ('O000000006','P000000010',1, 450.00, 450.00);
 
 INSERT INTO SHOPPINGCART VALUES
+('CART00001','M000000001'),
+('CART00002','M000000002'),
+('CART00003','M000000003'),
+('CART00004','M000000004'),
+('CART00005','M000000005'),
+('CART00006','M000000006'),
+('CART00007','M000000007');
+
+INSERT INTO ADDED_TO VALUES
 ('CART00001','P000000001',1),
 ('CART00002','P000000004',2),
 ('CART00003','P000000007',3),
 ('CART00004','P000000010',1);
-
-INSERT INTO ADDED_TO VALUES
-('CART00001','P000000001'),
-('CART00002','P000000004'),
-('CART00003','P000000007'),
-('CART00004','P000000010');
 
 INSERT INTO REVIEW VALUES
 ('R000000001','P000000001','Great product!','Fast delivery.'),
@@ -323,3 +325,17 @@ INSERT INTO NOTIFICATION VALUES
 ('N000000003','M000000004','O000000003','Good news! Your order O000000003 has been delivered.','2025-04-13 19:00:00',TRUE),
 ('N000000004','M000000006','O000000006','Payment received for order O000000006. Thank you!','2025-04-16 10:00:00',TRUE),
 ('N000000005','M000000007',NULL,'Don’t miss our weekend flash sale—up to 50% off selected items!','2025-04-18 08:00:00',FALSE);
+
+DELIMITER $$
+
+CREATE TRIGGER create_cart_after_member_insert
+AFTER INSERT ON MEMBER
+FOR EACH ROW
+BEGIN
+    DECLARE new_cart_id CHAR(10);
+    SET new_cart_id = CONCAT('CART', RIGHT(NEW.UID, 5));
+    INSERT INTO SHOPPINGCART (CartID, UID) VALUES (new_cart_id, NEW.UID);
+END $$
+
+DELIMITER ;
+

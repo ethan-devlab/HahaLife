@@ -8,7 +8,10 @@ import json
 
 
 def get_cart_id(uid):
-    return f"CART{uid[-5:]}"
+    sql = "SELECT CartID FROM SHOPPINGCART WHERE UID = %s"
+    result = execute_query(sql, (uid,), fetch=True)
+    if result:
+        return result[0]['CartID']
 
 
 @role_required('member')
@@ -20,11 +23,11 @@ def view_cart(request):
 
     # Fetch cart items
     sql = """
-        SELECT C.PID, P.PName, P.Price, C.Quantity, (P.Price * C.Quantity) AS Subtotal, S.SName, P.Stock
-        FROM SHOPPINGCART C
-        JOIN PRODUCT P ON C.PID = P.PID
+        SELECT A.PID, P.PName, P.Price, A.Quantity, (P.Price * A.Quantity) AS Subtotal, S.SName, P.Stock
+        FROM ADDED_TO A
+        JOIN PRODUCT P ON A.PID = P.PID
         JOIN SELLER S ON P.SID = S.UID
-        WHERE C.CartID = %s
+        WHERE A.CartID = %s
     """
     items = execute_query(sql, (cart_id,), fetch=True)
     total_qty = sum(item['Quantity'] for item in items)
@@ -58,21 +61,18 @@ def view_cart(request):
 def add_to_cart(request):
     if request.method == 'POST':
         uid = request.session.get('uid')
-        # if not uid:
-        #     return redirect('/hahalife/login/')
         cart_id = get_cart_id(uid)
         pid = request.POST.get('pid')
         qty = int(request.POST.get('quantity'))
 
         try:
-            check = execute_query("SELECT * FROM SHOPPINGCART WHERE CartID = %s AND PID = %s", (cart_id, pid), fetch=True)
+            check = execute_query("SELECT 1 FROM ADDED_TO WHERE CartID = %s AND PID = %s", (cart_id, pid), fetch=True)
             if check:
-                execute_query("UPDATE SHOPPINGCART SET Quantity = Quantity + %s WHERE CartID = %s AND PID = %s",
+                execute_query("UPDATE ADDED_TO SET Quantity = Quantity + %s WHERE CartID = %s AND PID = %s",
                             (qty, cart_id, pid))
             else:
-                execute_query("INSERT INTO SHOPPINGCART (CartID, PID, Quantity) VALUES (%s, %s, %s)",
-                            (cart_id, pid, qty))
-                execute_query("INSERT INTO ADDED_TO (CartID, PID) VALUES (%s, %s)", (cart_id, pid))
+                execute_query("INSERT INTO ADDED_TO (CartID, PID, Quantity) VALUES (%s, %s, %s)",
+                              (cart_id, pid, qty))
 
             messages.success(request, "Product added to cart successfully!")
             # Primarily returns to the previous page
@@ -89,19 +89,16 @@ def add_to_cart(request):
 def delete_from_cart(request, pid):
     cart_id = get_cart_id(request.session['uid'])
     execute_query("DELETE FROM ADDED_TO WHERE CartID = %s AND PID = %s", (cart_id, pid))
-    execute_query("DELETE FROM SHOPPINGCART WHERE CartID = %s AND PID = %s", (cart_id, pid))
     return redirect('/hahalife/cart/')
 
 
 @role_required('member')
 def update_quantity(request, pid):
-    print("Update quantity called")
     if request.method == 'POST':
         cart_id = get_cart_id(request.session['uid'])
         qty = int(request.POST.get('quantity'))
-        print(f"Cart ID: {cart_id}, PID: {pid}, Quantity: {qty}")
         if qty > 0:
-            execute_query("UPDATE SHOPPINGCART SET Quantity = %s WHERE CartID = %s AND PID = %s",
+            execute_query("UPDATE ADDED_TO SET Quantity = %s WHERE CartID = %s AND PID = %s",
                           (qty, cart_id, pid))
         else:
             return delete_from_cart(request, pid)
