@@ -17,8 +17,6 @@ def get_cart_id(uid):
 @role_required('member')
 def view_cart(request):
     uid = request.session.get('uid')
-    # if not uid:
-    #     return redirect('/hahalife/login/')
     cart_id = get_cart_id(uid)
 
     # Fetch cart items

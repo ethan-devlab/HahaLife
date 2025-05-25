@@ -12,8 +12,8 @@ import json
 @role_required('member')
 def checkout_view(request):
     uid = request.session.get('uid')
-    # if not uid or request.method != 'POST':
-    #     return redirect('/hahalife/cart/')
+    if request.method != 'POST':
+        return redirect('/hahalife/cart/')
 
     cart_id = f'CART{uid[-5:]}'
     selected = request.POST.getlist('selected_pids')

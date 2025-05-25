@@ -7,9 +7,6 @@ from django.contrib import messages
 
 @role_required('admin')
 def manage_user(request):
-    # if request.session.get('role') != 'admin':
-    #     return redirect('/hahalife/login/')
-
     members = execute_query(
         "SELECT UID, UName, Email, AccStatus FROM MEMBER", fetch=True
     )
@@ -75,9 +72,6 @@ def manage_user(request):
 
 @role_required('admin')
 def manage_product(request):
-    # if request.session.get('role') != 'admin':
-    #     return redirect('/hahalife/login/')
-
     products = execute_query(
         "SELECT PID, PName, Category, Price, Stock FROM PRODUCT", fetch=True
     )

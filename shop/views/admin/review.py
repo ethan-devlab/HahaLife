@@ -7,8 +7,6 @@ from django.contrib import messages
 
 @role_required('admin')
 def review_applicant(request):
-    # if request.session.get('role') != 'admin':
-    #     return redirect('/hahalife/login/')
     applicants = execute_query("SELECT * FROM APPLICANT", fetch=True)
     if request.method == 'POST':
         appid = request.POST['appid']

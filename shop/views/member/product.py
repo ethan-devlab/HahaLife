@@ -6,10 +6,6 @@ from ...utils import execute_query, role_required
 
 @role_required('member', 'guest')
 def product_list(request):
-    # uid = request.session.get('uid')
-    # if not uid or request.session.get('role') != 'member':
-    #     return redirect('/hahalife/login/')
-
     name = request.GET.get('search', '')
     tag = request.GET.get('tag')
     category = request.GET.get('category')
@@ -92,10 +88,6 @@ def product_list(request):
 
 @role_required('member')
 def product_detail(request, pid):
-    # uid = request.session.get('uid')
-    # if not uid or request.session.get('role') != 'member':
-    #     return redirect('/hahalife/login/')
-
     sql = """
         SELECT 
             P.PID, P.PName, P.Category, P.Price, P.Stock, P.Descript, P.ImagePath, S.SName AS SellerName,

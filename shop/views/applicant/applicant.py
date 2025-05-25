@@ -64,9 +64,6 @@ def apply_success(request):
 @role_required('applicant')
 def apply_status(request):
     uid = request.session.get('uid')
-    # if not uid:
-    #     return redirect('/hahalife/login/')
-
     applicant = execute_query(
         "SELECT * FROM APPLICANT WHERE AppID=%s", (uid,), fetch=True
     )

@@ -9,8 +9,6 @@ from ...utils import execute_query, role_required
 @role_required('member')
 def purchase_list(request):
     uid = request.session.get('uid')
-    # if not uid:
-    #     return redirect('/hahalife/login/')
     sql = """
         SELECT O.OID, O.CreatedAt, O.TotalAmount, O.OStatus, PB.PayMethod, PB.PayStatus
         FROM `ORDER` O

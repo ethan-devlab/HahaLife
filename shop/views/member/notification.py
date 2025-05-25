@@ -7,8 +7,6 @@ from ...utils import execute_query, role_required
 @role_required('member')
 def notification_view(request):
     uid = request.session.get('uid')
-    # if not uid:
-    #     return redirect('/hahalife/login/')
 
     notifications = execute_query(
         """
@@ -25,8 +23,6 @@ def notification_view(request):
 @role_required('member')
 def mark_read(request, nid):
     uid = request.session.get('uid')
-    # if not uid:
-    #     return redirect('/hahalife/login/')
 
     execute_query(
         "UPDATE NOTIFICATION SET IsRead = TRUE WHERE NID = %s AND MID = %s",

@@ -17,8 +17,6 @@ def check_permission(sid, pid):
 
 @role_required('seller')
 def add_product(request):
-    # if request.session.get('role') != 'seller':
-    #     return redirect('/hahalife/login/')
     promotions = execute_query(
         """
         SELECT PromoCode, DisAmount 
@@ -77,8 +75,6 @@ def add_product(request):
 
 @role_required('seller')
 def manage_products(request):
-    # if request.session.get('role') != 'seller':
-    #     return redirect('/hahalife/login/')
     sid = request.session['uid']
     sql = """
         SELECT P.PID,
@@ -103,9 +99,6 @@ def manage_products(request):
 
 @role_required('seller')
 def product_detail_s(request, pid):
-    # if request.session.get('role') != 'seller':
-    #     return redirect('/hahalife/login/')
-
     # only allow access to the product if the user is the one who possess it
     sid = request.session['uid']
     if not check_permission(sid=sid, pid=pid):
@@ -143,9 +136,6 @@ def product_detail_s(request, pid):
 
 @role_required('seller')
 def edit_product(request, pid):
-    # if request.session.get('role') != 'seller':
-    #     return redirect('/hahalife/login/')
-
     # only allow access to the product if the user is the one who possess it
     sid = request.session['uid']
     if not check_permission(sid=sid, pid=pid):
@@ -210,9 +200,6 @@ def edit_product(request, pid):
 
 @role_required('seller')
 def delete_product(request, pid):
-    # if request.session.get('role') != 'seller':
-    #     return redirect('/hahalife/login/')
-
     # only allow access to the product if the user is the one who possess it
     sid = request.session['uid']
     if not check_permission(sid=sid, pid=pid):
