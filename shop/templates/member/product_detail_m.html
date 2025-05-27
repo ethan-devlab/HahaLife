@@ -50,7 +50,7 @@
 
             <div class="info-group">
                 <label>Seller:</label>
-                <span>{{ product.SellerName }}</span>
+                <span><a href="{% url 'seller_product' product.SellerName %}">{{ product.SellerName }}</a></span>
             </div>
 
             <div class="info-group">
@@ -143,6 +143,17 @@
     .info-group label {
         font-weight: bold;
         color: var(--secondary-color);
+    }
+
+    .info-group a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .info-group a:hover {
+        color: var(--third-color);
     }
 
     .image-group {

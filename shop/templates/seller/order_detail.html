@@ -28,6 +28,10 @@ Order Detail - {{ order.OID }}
         <span>{{ order.OStatus }}</span>
       </div>
       <div class="info-group">
+        <label>Buyer:</label>
+        <span>{{ member.UName }}</span>
+      </div>
+      <div class="info-group">
         <label>Date:</label>
         <span>{{ order.CreatedAt }}</span>
       </div>
@@ -174,7 +178,7 @@ Order Detail - {{ order.OID }}
 
   .order-info {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 1.5rem;
   }
 

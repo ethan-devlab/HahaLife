@@ -204,7 +204,7 @@
       {% for item in items %}
       <tr>
         <td><input type="checkbox" name="selected_pids" value="{{ item.PID }}" checked></td>
-        <td>{{ item.SName }}</td>
+        <td><a href="{% url 'seller_product' item.SName %}">{{ item.SName }}</a></td>
         <td><a href="{% url 'product_detail' item.PID %}">{{ item.PName }}</a></td>
         <td class="price">NT${{ item.Price }}</td>
         <td class="quantity-cell">

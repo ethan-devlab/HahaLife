@@ -90,7 +90,7 @@ def product_list(request):
 def product_detail(request, pid):
     sql = """
         SELECT 
-            P.PID, P.PName, P.Category, P.Price, P.Stock, P.Descript, P.ImagePath, S.SName AS SellerName,
+            P.PID, P.SID, P.PName, P.Category, P.Price, P.Stock, P.Descript, P.ImagePath, S.SName AS SellerName,
             Pr.PromoCode, Pr.DisAmount, GROUP_CONCAT(PT.Tag) AS Tags
         FROM PRODUCT P
         JOIN SELLER S ON P.SID = S.UID
@@ -98,7 +98,7 @@ def product_detail(request, pid):
         LEFT JOIN PROMOTION Pr ON HP.PromoCode = Pr.PromoCode
         LEFT JOIN PRODUCT_TAG PT ON P.PID = PT.PID
         WHERE P.PID = %s
-        GROUP BY P.PID, P.PName, P.Category, P.Price, P.Stock, P.Descript, P.ImagePath, S.SName, Pr.PromoCode, Pr.DisAmount
+        GROUP BY P.PID, P.SID, P.PName, P.Category, P.Price, P.Stock, P.Descript, P.ImagePath, S.SName, Pr.PromoCode, Pr.DisAmount
         LIMIT 1
         """
 

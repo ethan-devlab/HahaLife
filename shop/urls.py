@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from .views.auth import auth
-from .views.member import product, cart, checkout, purchase, notification
+from .views.member import product, cart, checkout, purchase, notification, shop
 from .views.seller import seller, order, product as s_product
 from .views.admin import admin, review, manage
 from .views.applicant import applicant
@@ -28,6 +28,7 @@ urlpatterns = [
 
     path('', product.product_list, name='product_list'),
     path('products/<str:pid>/', product.product_detail, name='product_detail'),
+    path('products/seller/<str:sname>/', shop.seller_product, name='seller_product'),
     path('cart/', cart.view_cart, name='view_cart'),
     path('cart/add/', cart.add_to_cart, name='add_to_cart'),
     path('cart/delete/<str:pid>/', cart.delete_from_cart, name='delete_from_cart'),

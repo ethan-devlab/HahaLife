@@ -43,11 +43,12 @@ def purchase_detail(request, oid):
 
     # Product details (with promo and review)
     products = execute_query("""
-        SELECT OD.PID, P.PName, OD.Quantity, OD.UPrice, OD.Subtotal,
+        SELECT OD.PID, P.PName, OD.Quantity, OD.UPrice, OD.Subtotal, S.SName AS SellerName, P.SID,
                UP.PromoCode, PR.DisAmount,
                R.Sell_R, R.Buy_R
         FROM ORDER_DETAIL OD
         JOIN PRODUCT P ON OD.PID = P.PID
+        JOIN SELLER S ON P.SID = S.UID
         LEFT JOIN USE_PROMO UP ON OD.OID = UP.OID AND OD.PID = UP.PID
         LEFT JOIN PROMOTION PR ON UP.PromoCode = PR.PromoCode
         LEFT JOIN REVIEW R ON OD.PID = R.PID AND R.RevID = CONCAT('R', RIGHT(%s, 5), RIGHT(OD.PID, 3))

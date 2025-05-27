@@ -31,7 +31,11 @@
           <li><a href="{% url 'mypurchase' %}"><i class="ri-bank-card-line ri-xl"></i>Purchase</a></li>
           <li><a href="{% url 'notification' %}"><i class="ri-notification-3-line ri-xl"></i>Notification</a></li>
           <li><a href="{% url 'account' %}"><i class="ri-user-settings-line ri-xl"></i>Account</a></li>
+          {% if request.session.role == "guest" %}
+          <li><a href="{% url 'member_login' %}"><i class="ri-login-box-line ri-xl"></i>Login</a></li>
+          {% else %}
           <li><a href="{% url 'logout' %}"><i class="ri-logout-box-line ri-xl"></i>Logout</a></li>
+          {% endif %}        
         </div>
       </div>
     </div>

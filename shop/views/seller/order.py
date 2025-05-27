@@ -39,6 +39,7 @@ def order_detail(request, oid):
 
     # Fetch order, payment, shipment info
     order = execute_query("SELECT * FROM `ORDER` WHERE OID = %s", (oid,), fetch=True)[0]
+    member = execute_query("SELECT UName FROM MEMBER WHERE UID = %s", (order['MID'],), fetch=True)[0]
     payment = execute_query("SELECT * FROM PAID_BY WHERE OID = %s", (oid,), fetch=True)
     payment = payment[0] if payment else {}
     ship = execute_query("SELECT * FROM `CREATE` WHERE OID = %s", (oid,), fetch=True)
@@ -132,6 +133,7 @@ def order_detail(request, oid):
         'payment': payment,
         'ship': ship,
         'products': products,
+        'member': member,
     })
 
 
@@ -142,9 +144,8 @@ def submit_seller_review(request, oid, pid):
         rev_id = 'R' + oid[-5:] + pid[-3:]
         
         execute_query("""
-            INSERT INTO REVIEW (RevID, PID, Sell_R) 
+            REPLACE INTO REVIEW (RevID, PID, Sell_R) 
             VALUES (%s, %s, %s)
-            ON DUPLICATE KEY UPDATE Sell_R = VALUES(Sell_R)
         """, (rev_id, pid, sell_r))
         
         # return redirect(f'/hahalife/seller/order/{oid}/')
