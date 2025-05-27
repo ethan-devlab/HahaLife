@@ -1,7 +1,7 @@
 # Django Online Shopping System Demo Project
 This is a Django online shopping system demo project, made by group A13, who study Database System Course in FengChia University, Taiwan.
 ## Use Instruction
-* See [plain mysql scripts](https://github.com/ethan-devlab/HahaLife/blob/fc0fed9a64994671a2c29bc3fafe3881dd67d370/mysql/new_scripts.txt) for login account information.
+* See [plain mysql scripts](https://github.com/ethan-devlab/HahaLife/blob/main/mysql/new_scripts.txt) for login account information.
 * See LICENSE to use this project in your work.
 # Install and Run
 ## Install MySQL
