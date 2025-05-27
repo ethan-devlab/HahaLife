@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import handler404
 
-handler404 = 'shop.views.404.custom_404_view'
+handler404 = 'shop.views.shared.404.custom_404_view'
 
 urlpatterns = [
     path('', include('shop.urls')),

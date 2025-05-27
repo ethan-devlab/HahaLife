@@ -6,7 +6,7 @@ This is a Django online shopping system demo project, made by group A13, who stu
 # Install and Run
 ## Install MySQL
 1. Go to [MySQL](https://dev.mysql.com/downloads/mysql/) to download **MySQL Community Server 9.3.0 Innovation**
-If you use macOS and hava homebrew installed, you can also use either
+If you use macOS and have homebrew installed, you can also use either
 ```
 brew install mysql
 ``` 
@@ -14,13 +14,14 @@ or
 ```
 brew install mysql-client
 ```
-2. Download database file `new_scripts.txt` from [here](https://github.com/ethan-devlab/HahaLife/tree/55593ed008a7b52151b17a145c0cc6d75b665c80/mysql), then run
+2. Download database file `new_scripts.txt` from [here](https://github.com/ethan-devlab/HahaLife/blob/main/mysql/new_scripts.txt), then run
 ```
-mysql -u root < <path-to-file>/new_scripts.txt
+mysql -u root -p < <path-to-file>/new_scripts.txt
 ```
+or copy the content of `new_scripts.txt` and paste it into MySQL command line interface.
 3. Or download [shopping.sql](https://github.com/ethan-devlab/HahaLife/blob/main/mysql/shopping.sql), and run
 ```
-mysql -u root
+mysql -u root -p
 ```
 ```
 mysql> CREATE DATABASE IF NOT EXISTS shopping;
@@ -59,7 +60,7 @@ pip install -r requirements.txt
 ```
 Finally, run
 ```
-python3 manage.py runserver
+python manage.py runserver
 ```
 The default url will be `127.0.0.1:8000/`
 
@@ -70,9 +71,9 @@ python3 -m venv django_project
 ```
 In the same directory, run the script in terminal
 ```
-./django_project/bin/Activate
+source ./django_project/bin/activate
 ```
-Make sure you have done the actions above to get into virtual environment, you will see something like `(django_project) <Your Path>...%` in your terminal or CMD.
+Make sure you have done the actions above to get into virtual environment, you will see something like `(django_project) <Your Path>...%` in your terminal.
 
 Next, clone the project and install required packages.
 ```

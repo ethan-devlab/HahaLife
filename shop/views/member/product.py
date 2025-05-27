@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from django.shortcuts import render
+# from django.http import HttpResponseNotFound
 from ...utils import execute_query, role_required
 
 
@@ -102,7 +103,10 @@ def product_detail(request, pid):
         LIMIT 1
         """
 
-    product = execute_query(sql, (pid,), fetch=True)[0]
+    product = execute_query(sql, (pid,), fetch=True)
+    if not product:
+        # return HttpResponseNotFound("Product not found.")
+        return render(request, 'shared/404.html', status=404)
 
     reviews = execute_query(
         "SELECT Sell_R AS seller_review, Buy_R AS buyer_review FROM REVIEW WHERE PID = %s",
@@ -110,6 +114,6 @@ def product_detail(request, pid):
     )
 
     return render(request, 'member/product_detail_m.html', {
-        'product': product,
+        'product': product[0],
         'reviews': reviews
     })
